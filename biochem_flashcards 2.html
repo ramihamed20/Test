@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biochemistry Flashcards</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --border: #1e2d45;
+    --accent1: #3b82f6;
+    --accent2: #8b5cf6;
+    --accent3: #06b6d4;
+    --accent4: #10b981;
+    --accent5: #f59e0b;
+    --red: #ef4444;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --card-h: 340px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background-image: linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
+    background-size: 40px 40px; pointer-events: none; z-index: 0;
+  }
+  .glow { position: fixed; width: 500px; height: 500px; border-radius: 50%; filter: blur(120px); opacity: 0.12; pointer-events: none; z-index: 0; }
+  .glow1 { background: var(--accent1); top: -100px; left: -100px; }
+  .glow2 { background: var(--accent2); bottom: -100px; right: -100px; }
+
+  header { position: relative; z-index: 10; padding: 28px 24px 16px; text-align: center; border-bottom: 1px solid var(--border); }
+  .logo { font-family: 'Syne', sans-serif; font-size: clamp(18px,4vw,26px); font-weight: 800; background: linear-gradient(135deg, var(--accent1), var(--accent3)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .subtitle { font-size: 13px; color: var(--muted); margin-top: 4px; letter-spacing: 0.5px; }
+
+  /* LECTURE TABS */
+  .lec-tabs { display: flex; justify-content: center; gap: 10px; padding: 18px 24px 10px; position: relative; z-index: 10; flex-wrap: wrap; }
+  .lec-btn {
+    padding: 9px 22px; border-radius: 10px;
+    border: 2px solid var(--border); background: var(--surface);
+    color: var(--muted); font-family: 'Syne', sans-serif;
+    font-size: 13px; font-weight: 700; cursor: pointer;
+    transition: all 0.25s; white-space: nowrap; letter-spacing: 0.5px;
+  }
+  .lec-btn:hover { border-color: var(--accent1); color: var(--accent1); }
+  .lec-btn.active { color: #fff; }
+  .lec-btn[data-lec="all"].active    { background: linear-gradient(135deg,var(--accent1),var(--accent2)); border-color: var(--accent1); }
+  .lec-btn[data-lec="l34"].active    { background: linear-gradient(135deg,#06b6d4,#3b82f6); border-color: #06b6d4; }
+  .lec-btn[data-lec="l5"].active     { background: linear-gradient(135deg,#8b5cf6,#ec4899); border-color: #8b5cf6; }
+  .lec-btn[data-lec="l6"].active     { background: linear-gradient(135deg,#10b981,#f59e0b); border-color: #10b981; }
+  .lec-btn[data-lec="l7"].active     { background: linear-gradient(135deg,#ef4444,#8b5cf6); border-color: #ef4444; }
+  .lec-btn[data-lec="l8"].active     { background: linear-gradient(135deg,#f59e0b,#10b981); border-color: #f59e0b; }
+  .lec-count { font-size: 11px; font-weight: 400; opacity: 0.7; margin-left: 4px; }
+
+  .stats { display: flex; justify-content: center; gap: 20px; padding: 10px 24px 0; position: relative; z-index: 10; flex-wrap: wrap; }
+  .stat { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); }
+  .stat-val { font-family: 'Syne', sans-serif; font-weight: 700; color: var(--text); font-size: 15px; }
+
+  /* CATEGORY TABS */
+  .cats { display: flex; gap: 8px; padding: 14px 20px 10px; position: relative; z-index: 10; justify-content: center; flex-wrap: wrap; }
+  .cat-btn {
+    padding: 5px 13px; border-radius: 999px; border: 1px solid var(--border);
+    background: var(--surface); color: var(--muted); font-size: 12px;
+    font-family: 'DM Sans', sans-serif; font-weight: 500; cursor: pointer;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .cat-btn:hover { border-color: var(--accent1); color: var(--accent1); }
+  .cat-btn.active { color: #fff; }
+  .cat-btn[data-cat="all"].active           { background: var(--accent1); border-color: var(--accent1); }
+  .cat-btn[data-cat="electrolytes"].active  { background: #3b82f6; border-color: #3b82f6; }
+  .cat-btn[data-cat="ph"].active            { background: var(--accent3); border-color: var(--accent3); }
+  .cat-btn[data-cat="buffers"].active       { background: var(--accent4); border-color: var(--accent4); }
+  .cat-btn[data-cat="disturbances"].active  { background: var(--red); border-color: var(--red); }
+  .cat-btn[data-cat="proteins"].active      { background: #3b82f6; border-color: #3b82f6; }
+  .cat-btn[data-cat="aminoacids"].active    { background: var(--accent5); border-color: var(--accent5); }
+  .cat-btn[data-cat="classification"].active { background: #ec4899; border-color: #ec4899; }
+  .cat-btn[data-cat="peptide"].active       { background: #8b5cf6; border-color: #8b5cf6; }
+  .cat-btn[data-cat="primary"].active       { background: #06b6d4; border-color: #06b6d4; }
+  .cat-btn[data-cat="secondary"].active     { background: #10b981; border-color: #10b981; }
+  .cat-btn[data-cat="tertiary"].active      { background: #f59e0b; border-color: #f59e0b; }
+  .cat-btn[data-cat="chaperones"].active    { background: #ec4899; border-color: #ec4899; }
+  .cat-btn[data-cat="denaturation"].active  { background: #ef4444; border-color: #ef4444; }
+  .cat-btn[data-cat="agents"].active        { background: #f97316; border-color: #f97316; }
+  .cat-btn[data-cat="classif6"].active      { background: #10b981; border-color: #10b981; }
+  .cat-btn[data-cat="metabolism"].active   { background: #ef4444; border-color: #ef4444; }
+  .cat-btn[data-cat="nitrobal"].active     { background: #8b5cf6; border-color: #8b5cf6; }
+  .cat-btn[data-cat="dietary"].active      { background: #06b6d4; border-color: #06b6d4; }
+  .cat-btn[data-cat="digestion"].active    { background: #f59e0b; border-color: #f59e0b; }
+  .cat-btn[data-cat="enzymes"].active      { background: #10b981; border-color: #10b981; }
+  .cat-btn[data-cat="cascade"].active      { background: #3b82f6; border-color: #3b82f6; }
+  .cat-btn[data-cat="absorption"].active   { background: #ec4899; border-color: #ec4899; }
+  .cat-btn[data-cat="carb-intro"].active   { background: #f59e0b; border-color: #f59e0b; }
+  .cat-btn[data-cat="carb-roles"].active   { background: #10b981; border-color: #10b981; }
+  .cat-btn[data-cat="carb-classif"].active { background: #06b6d4; border-color: #06b6d4; }
+  .cat-btn[data-cat="monosac"].active      { background: #8b5cf6; border-color: #8b5cf6; }
+
+  .progress-wrap { padding: 0 20px 14px; position: relative; z-index: 10; }
+  .progress-bar { height: 3px; background: var(--border); border-radius: 99px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent1), var(--accent2)); border-radius: 99px; transition: width 0.4s ease; }
+  .progress-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-top: 5px; }
+
+  .card-area { position: relative; z-index: 10; padding: 0 20px; display: flex; flex-direction: column; align-items: center; }
+  .card-num { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; color: var(--muted); text-transform: uppercase; margin-bottom: 12px; }
+
+  .flip-container { width: 100%; max-width: 640px; height: var(--card-h); perspective: 1200px; cursor: pointer; }
+  .flip-inner { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.55s cubic-bezier(0.23,1,0.32,1); }
+  .flip-container.flipped .flip-inner { transform: rotateY(180deg); }
+  .card-face { position: absolute; inset: 0; border-radius: 20px; padding: 28px 28px 22px; backface-visibility: hidden; display: flex; flex-direction: column; border: 1px solid var(--border); }
+  .face-front { background: linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%); }
+  .face-back  { background: linear-gradient(135deg, #0f1e35 0%, #1a1535 100%); transform: rotateY(180deg); overflow-y: auto; }
+  .face-tag { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; font-family: 'Syne', sans-serif; letter-spacing: 0.5px; margin-bottom: 14px; }
+  .tag-electrolytes  { background: rgba(59,130,246,0.18); color: #60a5fa; }
+  .tag-ph            { background: rgba(6,182,212,0.18);  color: #22d3ee; }
+  .tag-buffers       { background: rgba(16,185,129,0.18); color: #34d399; }
+  .tag-disturbances  { background: rgba(239,68,68,0.18);  color: #f87171; }
+  .tag-proteins      { background: rgba(59,130,246,0.18); color: #60a5fa; }
+  .tag-aminoacids    { background: rgba(245,158,11,0.18); color: #fbbf24; }
+  .tag-classification{ background: rgba(236,72,153,0.18); color: #f472b6; }
+  .tag-peptide       { background: rgba(139,92,246,0.18); color: #c4b5fd; }
+  .tag-primary       { background: rgba(6,182,212,0.18);  color: #22d3ee; }
+  .tag-secondary     { background: rgba(16,185,129,0.18); color: #34d399; }
+  .tag-tertiary      { background: rgba(245,158,11,0.18); color: #fbbf24; }
+  .tag-chaperones    { background: rgba(236,72,153,0.18); color: #f472b6; }
+  .tag-denaturation  { background: rgba(239,68,68,0.18);  color: #f87171; }
+  .tag-agents        { background: rgba(249,115,22,0.18); color: #fb923c; }
+  .tag-classif6      { background: rgba(16,185,129,0.18); color: #34d399; }
+  .tag-metabolism    { background: rgba(239,68,68,0.18);  color: #f87171; }
+  .tag-nitrobal      { background: rgba(139,92,246,0.18); color: #c4b5fd; }
+  .tag-dietary       { background: rgba(6,182,212,0.18);  color: #22d3ee; }
+  .tag-digestion     { background: rgba(245,158,11,0.18); color: #fbbf24; }
+  .tag-enzymes       { background: rgba(16,185,129,0.18); color: #34d399; }
+  .tag-cascade       { background: rgba(59,130,246,0.18); color: #60a5fa; }
+  .tag-absorption    { background: rgba(236,72,153,0.18); color: #f472b6; }
+  .tag-carb-intro    { background: rgba(245,158,11,0.18); color: #fbbf24; }
+  .tag-carb-roles    { background: rgba(16,185,129,0.18); color: #34d399; }
+  .tag-carb-classif  { background: rgba(6,182,212,0.18);  color: #22d3ee; }
+  .tag-monosac       { background: rgba(139,92,246,0.18); color: #c4b5fd; }
+
+  .card-q { font-family: 'Syne', sans-serif; font-size: clamp(15px,3vw,18px); font-weight: 700; line-height: 1.5; color: var(--text); flex: 1; }
+  .tap-hint { font-size: 11px; color: var(--muted); margin-top: 14px; text-align: center; }
+  .card-a { font-size: clamp(13px,2.5vw,15px); line-height: 1.65; color: var(--text); flex: 1; white-space: pre-line; }
+  .card-note { font-size: 12px; color: var(--muted); margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); line-height: 1.55; font-style: italic; }
+  .face-back .face-tag { margin-bottom: 12px; }
+
+  .cat-card {
+    width: 100%; max-width: 640px; margin-top: 14px;
+    display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+  }
+  .ctrl-btn {
+    flex: 1; min-width: 80px; max-width: 120px;
+    padding: 10px 6px; border-radius: 12px; border: 1px solid var(--border);
+    background: var(--surface); color: var(--muted);
+    font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 13px;
+    cursor: pointer; transition: all 0.2s; text-align: center;
+  }
+  .ctrl-btn:hover { background: var(--surface2); color: var(--text); border-color: var(--accent1); }
+  .ctrl-btn.know  { border-color: var(--accent4); color: var(--accent4); }
+  .ctrl-btn.know:hover  { background: rgba(16,185,129,0.15); }
+  .ctrl-btn.skip  { border-color: var(--red); color: var(--red); }
+  .ctrl-btn.skip:hover  { background: rgba(239,68,68,0.15); }
+
+  .nav-row { display: flex; gap: 12px; justify-content: center; margin-top: 10px; width: 100%; max-width: 640px; }
+  .nav-btn { flex: 1; padding: 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; cursor: pointer; transition: all 0.2s; }
+  .nav-btn:hover { background: var(--surface2); border-color: var(--accent1); }
+
+  .controls-row { display: flex; gap: 8px; justify-content: center; margin-top: 10px; width: 100%; max-width: 640px; }
+
+  .overview { position: relative; z-index: 10; padding: 20px 20px 32px; }
+  .overview-title { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 1px; color: var(--muted); text-transform: uppercase; margin-bottom: 12px; text-align: center; }
+  .mini-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+  .mini-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; gap: 3px; }
+  .mini-card:hover { border-color: var(--accent1); background: var(--surface2); }
+  .mini-card.active { border-color: var(--accent1); background: rgba(59,130,246,0.12); }
+  .mini-card.done { opacity: 0.4; }
+  .mini-num { font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 800; color: var(--accent1); }
+  .mini-card span:last-child { font-size: 11px; color: var(--muted); line-height: 1.4; }
+</style>
+</head>
+<body>
+<div class="glow glow1"></div>
+<div class="glow glow2"></div>
+
+<header>
+  <div class="logo">Biochemistry Flashcards</div>
+  <div class="subtitle">Dr. Zeanap Mohamed · Osama College of Dentistry · 2025–2026</div>
+</header>
+
+<!-- LECTURE TABS -->
+<div class="lec-tabs" id="lecTabs">
+  <button class="lec-btn active" data-lec="all"  onclick="selectLec('all',this)">📚 All Lectures <span class="lec-count" id="cnt-all"></span></button>
+  <button class="lec-btn"        data-lec="l34"  onclick="selectLec('l34',this)">📘 Lecture 3 &amp; 4 <span class="lec-count" id="cnt-l34"></span></button>
+  <button class="lec-btn"        data-lec="l5"   onclick="selectLec('l5',this)">📗 Lecture 5 <span class="lec-count" id="cnt-l5"></span></button>
+  <button class="lec-btn"        data-lec="l6"   onclick="selectLec('l6',this)">📙 Lecture 6 <span class="lec-count" id="cnt-l6"></span></button>
+  <button class="lec-btn"        data-lec="l7"   onclick="selectLec('l7',this)">🧪 Lecture 7 <span class="lec-count" id="cnt-l7"></span></button>
+  <button class="lec-btn"        data-lec="l8"   onclick="selectLec('l8',this)">🍬 Lecture 8 <span class="lec-count" id="cnt-l8"></span></button>
+</div>
+
+<div class="stats">
+  <div class="stat">Card <span class="stat-val" id="statCurrent">1</span> of <span class="stat-val" id="statTotal">?</span></div>
+  <div class="stat">✅ <span class="stat-val" id="statKnow">0</span> known</div>
+  <div class="stat">🔁 <span class="stat-val" id="statSkip">0</span> review</div>
+</div>
+
+<!-- CATEGORY FILTER -->
+<div class="cats" id="catBtns"></div>
+
+<div class="progress-wrap">
+  <div class="progress-bar"><div class="progress-fill" id="progFill" style="width:0%"></div></div>
+  <div class="progress-label"><span id="progLeft"></span><span id="progPct"></span></div>
+</div>
+
+<div class="card-area">
+  <div class="card-num" id="cardNum">Card 1 of ?</div>
+  <div class="flip-container" id="flipBox" onclick="flipCard()">
+    <div class="flip-inner">
+      <div class="card-face face-front">
+        <span class="face-tag" id="cardTag"></span>
+        <div class="card-q" id="cardQ"></div>
+        <div class="tap-hint">Tap to reveal answer</div>
+      </div>
+      <div class="card-face face-back">
+        <span class="face-tag" id="cardTagB"></span>
+        <div class="card-a" id="cardA"></div>
+        <div class="card-note" id="cardNote"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cat-card">
+    <button class="ctrl-btn know" onclick="markKnow()">✅ Know it</button>
+    <button class="ctrl-btn skip" onclick="markSkip()">🔁 Review</button>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="prevCard()">←</button>
+    <button class="nav-btn" onclick="nextCard()">→</button>
+  </div>
+
+  <div class="controls-row">
+    <button class="ctrl-btn" onclick="shuffleCards()" style="font-size:12px;">🔀 Shuffle</button>
+    <button class="ctrl-btn" onclick="resetAll()"     style="font-size:12px;">↺ Reset</button>
+  </div>
+</div>
+
+<div class="overview">
+  <div class="overview-title">All Cards — tap to jump</div>
+  <div class="mini-grid" id="miniGrid"></div>
+</div>
+
+<script>
+// ── LECTURE ASSIGNMENTS ──────────────────────────────────────────
+const LEC_MAP = {
+  electrolytes:'l34', ph:'l34', buffers:'l34', disturbances:'l34',
+  proteins:'l34', aminoacids:'l34', classification:'l34',
+  peptide:'l5', primary:'l5', secondary:'l5', tertiary:'l5', chaperones:'l5',
+  denaturation:'l6', agents:'l6', classif6:'l6',
+  metabolism:'l7', nitrobal:'l7', dietary:'l7', digestion:'l7',
+  enzymes:'l7', cascade:'l7', absorption:'l7',
+  'carb-intro':'l8', 'carb-roles':'l8', 'carb-classif':'l8', monosac:'l8',
+};
+
+const CAT_LABELS = {
+  all:'All', electrolytes:'⚡ Electrolytes', ph:'⚖ pH & Ka',
+  buffers:'🛡 Buffers', disturbances:'🏥 Disturbances', proteins:'🧬 Proteins',
+  aminoacids:'🔑 Amino Acids', classification:'📊 Classification',
+  peptide:'🔗 Peptide Bond', primary:'1️⃣ Primary', secondary:'🌀 Secondary',
+  tertiary:'🏗️ Tertiary/Quat', chaperones:'🛠 Chaperones',
+  denaturation:'🔥 Denaturation', agents:'⚗️ Agents', classif6:'📋 Classification',
+  metabolism:'♻️ Protein Metabolism', nitrobal:'⚖️ Nitrogen Balance',
+  dietary:'🥩 Dietary Requirements', digestion:'🔬 Protein Digestion',
+  enzymes:'⚙️ Digestive Enzymes', cascade:'🔗 Enzyme Cascade',
+  absorption:'🫀 Amino Acid Absorption',
+  'carb-intro':'🍬 Carb Introduction',
+  'carb-roles':'⚡ Biological Roles',
+  'carb-classif':'📊 Carb Classification',
+  monosac:'🔬 Monosaccharides',
+};
+
+const ALL_CARDS = [
+{ cat:"electrolytes", lec:"l34",
+  q:"What are electrolytes and what are the three types?",
+  a:"Substances that dissociate into ions in water, making the solution electrically conductive. Types: Acids (release H⁺) | Bases (release OH⁻ or accept H⁺) | Salts (release other ions)",
+  note:"Physiological roles: osmotic balance, nerve/muscle regulation, pH buffering, and in saliva — tooth remineralization." },
+{ cat:"electrolytes", lec:"l34",
+  q:"What is the difference between a strong and a weak electrolyte?",
+  a:"Strong electrolyte: ~100% ionization in water (e.g. HCl, NaOH) → high conductivity, drastic pH change. Weak electrolyte: partial ionization with equilibrium (e.g. H₂CO₃) → lower conductivity, acts as a buffer.",
+  note:"Water itself is a WEAK electrolyte because very few ions are produced — it conducts electricity very poorly." },
+{ cat:"electrolytes", lec:"l34",
+  q:"What is the main extracellular cation and its role?",
+  a:"Na⁺ (Sodium) — ~0.2% body mass. Regulates osmotic pressure, nerve impulse transmission, and muscle contraction.",
+  note:"Na⁺ is actively pumped OUT of cells by Na⁺/K⁺-ATPase to maintain the electrochemical gradient." },
+{ cat:"electrolytes", lec:"l34",
+  q:"What is the main intracellular cation and its role?",
+  a:"K⁺ (Potassium) — ~0.4% body mass. Regulates cell membrane potential, crucial for muscle and nerve function.",
+  note:"Na⁺ is mainly OUTSIDE; K⁺ is mainly INSIDE — the opposite gradient is maintained by the Na⁺/K⁺ pump." },
+{ cat:"electrolytes", lec:"l34",
+  q:"What are the biological roles of Ca²⁺?",
+  a:"Bone and teeth mineralization | blood clotting | muscle contraction | cellular signaling. ~1.5% body mass.",
+  note:"In the oral cavity, Ca²⁺ in saliva contributes to enamel remineralization. Ca²⁺ also activates many enzymes." },
+{ cat:"electrolytes", lec:"l34",
+  q:"What is the role of Mg²⁺ (Magnesium)?",
+  a:"Cofactor in hundreds of enzymatic reactions. Contributes to enamel hardness and stability. ~0.1% body mass.",
+  note:"Essential for activating ATPase, DNA/RNA polymerases, and many kinases. Also involved in protein synthesis." },
+{ cat:"electrolytes", lec:"l34",
+  q:"What are the roles of Cl⁻, HCO₃⁻, and PO₄³⁻?",
+  a:"Cl⁻: main extracellular anion, osmotic balance, component of gastric HCl. HCO₃⁻: major blood buffer. PO₄³⁻: main intracellular anion; bones, teeth, ATP, nucleic acids, intracellular buffer.",
+  note:"HCO₃⁻ ~0.2% body mass. PO₄³⁻ ~1% body mass — highest intracellular anion concentration." },
+{ cat:"electrolytes", lec:"l34",
+  q:"State the three theories of acids and bases.",
+  a:"Arrhenius: acid produces H⁺ / base produces OH⁻ | Brønsted-Lowry: acid = proton donor / base = proton acceptor | Lewis: acid = electron pair acceptor / base = electron pair donor",
+  note:"Lewis is the broadest — it does not require H⁺. Example: BF₃ (acid) accepts electrons from NH₃ (base)." },
+{ cat:"electrolytes", lec:"l34",
+  q:"What is the physiological significance of electrolytes in saliva?",
+  a:"Salts supply Ca²⁺ and PO₄³⁻ for enamel remineralization. HCO₃⁻ neutralizes bacterial acids. Electrolytes maintain salivary pH ~6.8–7.4.",
+  note:"After a cariogenic acid challenge, salivary buffers (mainly bicarbonate) restore pH above the critical value (~5.5) to halt demineralization." },
+{ cat:"electrolytes", lec:"l34",
+  q:"Why is water considered a weak electrolyte?",
+  a:"Water auto-ionizes only minimally: H₂O ⇌ H⁺ + OH⁻. So few ions are produced that pure water conducts electricity very poorly.",
+  note:"In reality H⁺ immediately combines with another water molecule: 2H₂O ⇌ H₃O⁺ + OH⁻. Kw = 1×10⁻¹⁴ at 25°C." },
+{ cat:"ph", lec:"l34",
+  q:"Define pH and interpret the scale.",
+  a:"pH = –log[H⁺] | pH < 7 = acidic (more H⁺) | pH = 7 = neutral | pH > 7 = alkaline (fewer H⁺). Blood normal range: 7.35–7.45.",
+  note:"Each pH unit = 10-fold difference in [H⁺]. A drop from 7.4 to 6.4 means 10× more H⁺ — extremely dangerous physiologically." },
+{ cat:"ph", lec:"l34",
+  q:"What is the ionization constant of water (Kw)?",
+  a:"Kw = [H⁺][OH⁻] = (1×10⁻⁷)(1×10⁻⁷) = 1×10⁻¹⁴ at 25°C. At neutrality: [H⁺] = [OH⁻] = 1×10⁻⁷ mol/L → pH = 7.",
+  note:"Kw is the foundation for understanding pH, acid-base balance, and buffer systems in the body." },
+{ cat:"ph", lec:"l34",
+  q:"What is the dissociation constant Ka and how does it relate to acid strength?",
+  a:"Ka = [H⁺][A⁻] / [HA]. High Ka → more dissociation → STRONGER acid. Low Ka → less dissociation → WEAKER acid.",
+  note:"HCl: Ka very large (strong) | Acetic acid: Ka = 1.8×10⁻⁵ (weak) | Carbonic acid: Ka = 4.3×10⁻⁷ (very weak)" },
+{ cat:"ph", lec:"l34",
+  q:"What is pKa and how does it relate to acid strength?",
+  a:"pKa = –log(Ka). SMALLER pKa = STRONGER acid (more dissociation). LARGER pKa = WEAKER acid.",
+  note:"KEY: When pH = pKa, [HA] = [A⁻] — acid and conjugate base exist in equal amounts. This is the optimal buffering point." },
+{ cat:"ph", lec:"l34",
+  q:"State the Henderson-Hasselbalch equation and its significance.",
+  a:"pH = pKa + log([A⁻]/[HA]) = pKa + log([conjugate base]/[acid]). Describes how buffer pH depends on acid strength and base-to-acid ratio.",
+  note:"Example: Acetic acid pKa = 4.74. When [CH₃COO⁻] = [CH₃COOH], log(1) = 0, so pH = 4.74." },
+{ cat:"ph", lec:"l34",
+  q:"Compare acidic vs. alkaline solutions in terms of ion concentrations.",
+  a:"Acidic: [H⁺] > [OH⁻], pH < 7. Examples: HCl, H₂SO₄, lactic acid. Alkaline: [OH⁻] > [H⁺], pH > 7. Examples: NaOH, NH₃, bicarbonate.",
+  note:"A solution is acidic simply because it has MORE H⁺ than OH⁻ — not necessarily because it contains a named acid." },
+{ cat:"ph", lec:"l34",
+  q:"What does it mean when pH = pKa for a buffer?",
+  a:"The weak acid (HA) and its conjugate base (A⁻) are present in EQUAL concentrations — the buffer is at its strongest (maximum buffering capacity).",
+  note:"Buffer capacity is greatest within ±1 pH unit of the pKa. Outside this range, the buffer becomes ineffective." },
+{ cat:"ph", lec:"l34",
+  q:"How are Ka and pKa related? Give an example comparison.",
+  a:"pKa = –log(Ka). Acid with Ka = 1×10⁻³ → pKa = 3 (stronger). Acid with Ka = 1×10⁻⁷ → pKa = 7 (weaker). Inverse relationship: as Ka↑, pKa↓.",
+  note:"Acid strength table: HCl (Ka = huge, very strong) > Acetic acid (Ka = 1.8×10⁻⁵) > H₂CO₃ (Ka = 4.3×10⁻⁷) > H₂O" },
+{ cat:"buffers", lec:"l34",
+  q:"Define a buffer and state its two required components.",
+  a:"A buffer is a solution that RESISTS changes in pH when small amounts of acid or base are added. Components: 1) Weak acid (HA) 2) Its conjugate base (A⁻).",
+  note:"A buffer system = Weak acid (HA) + Conjugate base (A⁻). Both components are essential for bidirectional resistance." },
+{ cat:"buffers", lec:"l34",
+  q:"What happens when H⁺ (acid) is added to a buffer?",
+  a:"The conjugate base (A⁻) reacts: A⁻ + H⁺ → HA. This removes excess H⁺ from solution, preventing a large pH drop.",
+  note:"The equilibrium shifts toward HA formation. The pH change is minimal compared to an unbuffered solution." },
+{ cat:"buffers", lec:"l34",
+  q:"What happens when OH⁻ (base) is added to a buffer?",
+  a:"The weak acid (HA) reacts: HA + OH⁻ → A⁻ + H₂O. This removes added OH⁻, preventing a large pH increase.",
+  note:"The equilibrium shifts toward A⁻ formation. Dynamic equilibrium HA ⇌ H⁺ + A⁻ constantly adjusts to resist pH change." },
+{ cat:"buffers", lec:"l34",
+  q:"Describe the Bicarbonate Buffer System.",
+  a:"H₂CO₃ / HCO₃⁻ | Location: blood plasma (extracellular). Equation: CO₂ + H₂O ⇌ H₂CO₃ ⇌ H⁺ + HCO₃⁻",
+  note:"Uniquely regulated by TWO organs: Lungs (control CO₂ levels) + Kidneys (control HCO₃⁻ reabsorption). Most important extracellular buffer." },
+{ cat:"buffers", lec:"l34",
+  q:"Describe the Phosphate Buffer System.",
+  a:"H₂PO₄⁻ / HPO₄²⁻ | Location: intracellular fluids and kidneys | pKa ≈ 7.2",
+  note:"Works best near pH 6.8–7.1 (close to intracellular pH). Important for renal acid excretion and urinary buffering." },
+{ cat:"buffers", lec:"l34",
+  q:"Describe the Protein Buffer System.",
+  a:"Amino acid side chains act as both acids and bases: –COOH ⇌ –COO⁻ + H⁺ (weak acid) and –NH₂ + H⁺ ⇌ –NH₃⁺ (weak base).",
+  note:"Location: both intra- and extracellular. Accounts for MOST buffering inside cells and in plasma proteins like albumin." },
+{ cat:"buffers", lec:"l34",
+  q:"How does Hemoglobin act as a buffer?",
+  a:"CO₂ enters RBCs → forms H₂CO₃ → releases H⁺. Hemoglobin binds H⁺: Hb⁻ + H⁺ → HHb, preventing pH drop.",
+  note:"At the lungs, H⁺ is released as CO₂ is exhaled. This is the Bohr effect — key to efficient O₂ delivery and CO₂ removal." },
+{ cat:"buffers", lec:"l34",
+  q:"Why is the bicarbonate system the most important blood buffer despite its pKa being 6.1 (far from pH 7.4)?",
+  a:"Because it is regulated by TWO organs simultaneously — lungs (CO₂ removal, fast) and kidneys (HCO₃⁻, slow) — giving it enormous effective capacity.",
+  note:"The open system (CO₂ can be exhaled) prevents equilibrium saturation, making it far more effective than a closed chemical buffer." },
+{ cat:"disturbances", lec:"l34",
+  q:"What is Metabolic Acidosis? Cause, change, and compensation?",
+  a:"Primary: ↓ HCO₃⁻ → ↓ pH. Compensation: hyperventilation → ↓ CO₂ → ↑ pH back toward normal.",
+  note:"Causes: diabetic ketoacidosis (DKA), lactic acidosis, severe diarrhea (loss of HCO₃⁻), renal failure. Sign: Kussmaul breathing (rapid, deep)." },
+{ cat:"disturbances", lec:"l34",
+  q:"What is Metabolic Alkalosis? Cause, change, and compensation?",
+  a:"Primary: ↑ HCO₃⁻ → ↑ pH. Compensation: hypoventilation → ↑ CO₂ → ↓ pH back toward normal.",
+  note:"Causes: vomiting (loss of HCl), excessive antacid/bicarbonate intake, diuretic therapy (loss of H⁺ in urine)." },
+{ cat:"disturbances", lec:"l34",
+  q:"What is Respiratory Acidosis? Cause, change, and compensation?",
+  a:"Primary: ↑ pCO₂ (CO₂ retention due to poor ventilation) → ↑ H₂CO₃ → ↑ H⁺ → ↓ pH. Compensation: kidneys ↑ HCO₃⁻ reabsorption.",
+  note:"Causes: COPD, asthma, pneumonia, airway obstruction, respiratory center depression (drugs, anesthesia). Compensation is SLOW (days)." },
+{ cat:"disturbances", lec:"l34",
+  q:"What is Respiratory Alkalosis? Cause, change, and compensation?",
+  a:"Primary: ↓ pCO₂ (excessive ventilation) → ↓ H₂CO₃ → ↓ H⁺ → ↑ pH. Compensation: kidneys ↓ HCO₃⁻ reabsorption.",
+  note:"Causes: anxiety, pain, fever, high altitude, mechanical over-ventilation. Symptoms: dizziness, tingling (from ↓ ionized Ca²⁺)." },
+{ cat:"disturbances", lec:"l34",
+  q:"Quick rule: which organ compensates for Metabolic disorders vs. Respiratory disorders?",
+  a:"Metabolic disorder → LUNGS compensate (fast, minutes to hours). Respiratory disorder → KIDNEYS compensate (slow, hours to days).",
+  note:"Normal values: pH 7.35–7.45 | pCO₂ 35–45 mmHg | HCO₃⁻ 22–26 mEq/L. Deviation from these defines the disorder." },
+{ cat:"disturbances", lec:"l34",
+  q:"A patient has pH 7.28, ↓ HCO₃⁻, and deep rapid breathing. What is the diagnosis and compensation?",
+  a:"Metabolic Acidosis. The deep rapid breathing (Kussmaul breathing) IS the respiratory compensation — blowing off CO₂ to raise pH.",
+  note:"The low HCO₃⁻ is the PRIMARY problem (loss of base or gain of acid). The lungs respond immediately; kidneys take longer." },
+{ cat:"proteins", lec:"l34",
+  q:"Define proteins and state their structural basis.",
+  a:"Large, complex biological molecules made of amino acid polymers linked by PEPTIDE BONDS. They fold into specific 3D structures that determine their function.",
+  note:"20 standard amino acids build all mammalian proteins. The sequence of amino acids (primary structure) dictates the final 3D shape." },
+{ cat:"proteins", lec:"l34",
+  q:"Name all major protein functions with one example each.",
+  a:"Enzymatic (amylase) | Structural (collagen) | Regulatory (insulin) | Transport (hemoglobin) | Contractile (myosin) | Immune (antibodies) | Protective (fibrin) | Buffering (albumin) | Energy source (4 kcal/g)",
+  note:"Proteins provide 4 kcal/g — same as carbohydrates. In starvation, muscle protein is catabolized for gluconeogenesis." },
+{ cat:"proteins", lec:"l34",
+  q:"Describe the general structure of an amino acid.",
+  a:"α-carbon bonded to: 1) Amino group (–NH₂/–NH₃⁺) 2) Carboxyl group (–COOH/–COO⁻) 3) Hydrogen atom 4) R-group (side chain — unique to each AA)",
+  note:"At physiological pH 7.4: amino group is –NH₃⁺ (protonated), carboxyl group is –COO⁻ (deprotonated) → zwitterion." },
+{ cat:"proteins", lec:"l34",
+  q:"What is a zwitterion and at what pH does it form?",
+  a:"An amino acid at physiological pH (~7.4) bearing BOTH a positive (–NH₃⁺) and negative (–COO⁻) charge simultaneously → net charge = 0, but internal charges exist.",
+  note:"Low pH (acidic): fully protonated → net +charge. High pH (basic): fully deprotonated → net –charge. Only at the isoelectric point (pI) is net charge truly zero." },
+{ cat:"proteins", lec:"l34",
+  q:"Explain chirality of amino acids. What is the only exception?",
+  a:"The α-carbon bonds to 4 different groups → chiral (asymmetric) center → two mirror-image forms: L-form and D-form. ONLY L-amino acids are incorporated into proteins during translation.",
+  note:"EXCEPTION: Glycine — its R-group is H, making two substituents identical → NO chiral center → non-chiral (achiral)." },
+{ cat:"proteins", lec:"l34",
+  q:"What are Proteinogenic vs. Non-proteinogenic amino acids?",
+  a:"Proteinogenic: 20 standard AAs directly coded by DNA and incorporated during translation. Non-proteinogenic: not directly coded by DNA; arise via post-translational modification or special codons.",
+  note:"Non-proteinogenic examples: Hydroxyproline (modified Pro, stabilizes collagen), GABA (neurotransmitter), Ornithine & Citrulline (urea cycle)." },
+{ cat:"proteins", lec:"l34",
+  q:"What is the role of Hydroxyproline and why does it require Vitamin C?",
+  a:"Hydroxyproline stabilizes the collagen triple helix by forming additional hydrogen bonds. It is formed by hydroxylation of Proline, a reaction requiring Vitamin C (ascorbic acid) as a cofactor.",
+  note:"Vitamin C deficiency → impaired Hydroxyproline formation → unstable collagen → SCURVY (bleeding gums, poor wound healing, joint pain)." },
+{ cat:"proteins", lec:"l34",
+  q:"How do proteins function as buffers?",
+  a:"Ionizable amino acid side chains (–COOH / –NH₂) can accept or donate H⁺ depending on pH. Histidine (pKa ~6) is especially important at physiological pH.",
+  note:"Key example: Hemoglobin buffers H⁺ in RBCs during CO₂ transport (Bohr effect). Albumin is the main extracellular protein buffer." },
+{ cat:"proteins", lec:"l34",
+  q:"What is the role of fibrin and how is it formed?",
+  a:"Fibrin is a protective protein that forms the blood clot mesh. It is derived from fibrinogen (soluble) by the enzyme Thrombin during coagulation.",
+  note:"The coagulation cascade converts Prothrombin → Thrombin → Fibrinogen → Fibrin. This is the PROTECTIVE function of proteins." },
+{ cat:"proteins", lec:"l34",
+  q:"Name two examples each for structural and contractile proteins.",
+  a:"Structural: Collagen (connective tissue, most abundant body protein), Keratin (hair, nails), Actin & Tubulin (cytoskeleton). Contractile: Actin & Myosin (muscle contraction), Dynein & Kinesin (intracellular transport).",
+  note:"Actin appears in BOTH categories — it is structural in the cytoskeleton AND contractile in muscle (thin filaments sliding against myosin)." },
+{ cat:"aminoacids", lec:"l34",
+  q:"What are the 9 essential amino acids?",
+  a:"His, Ile, Leu, Lys, Met, Phe, Thr, Trp, Val. Must be obtained from diet because the body cannot synthesize them in sufficient quantities.",
+  note:"Mnemonic: PVT TIM HaLL → Phe, Val, Thr, Trp, Ile, Met, His (+ Arg for children), Leu, Lys. Histidine is essential for children AND adults." },
+{ cat:"aminoacids", lec:"l34",
+  q:"What makes Glycine unique among the 20 amino acids?",
+  a:"Glycine is the SMALLEST amino acid with R-group = H. Because two substituents on the α-carbon are identical (both H), it is the ONLY non-chiral (achiral) amino acid.",
+  note:"Despite its simplicity, Glycine is very common in collagen (repeating Gly-X-Y triplet) because its small size allows tight triple-helix packing." },
+{ cat:"aminoacids", lec:"l34",
+  q:"What makes Proline structurally unique?",
+  a:"Proline is an IMINO ACID — its side chain cyclizes back to bond with the amino nitrogen, forming a rigid 5-membered pyrrolidine ring.",
+  note:"This rigidity disrupts α-helices (causes kinks). However, it is very common in collagen, where it contributes to the rigid triple-helix structure." },
+{ cat:"aminoacids", lec:"l34",
+  q:"Why is Histidine special at physiological pH?",
+  a:"Histidine has an imidazole ring with pKa ≈ 6.0 — close to physiological pH 7.4 — making it only PARTIALLY positive at pH 7. It can rapidly shuttle protons.",
+  note:"This makes His ideal for enzyme active sites as a proton donor/acceptor (e.g., in serine proteases). It buffers effectively near pH 7." },
+{ cat:"aminoacids", lec:"l34",
+  q:"What is special about Cysteine?",
+  a:"Cysteine contains a thiol group (–SH). Two cysteines can be oxidized to form a covalent DISULFIDE BOND (–S–S–), stabilizing tertiary and quaternary protein structure.",
+  note:"Example: Insulin has 3 disulfide bonds linking A and B chains. Keratin in hair has many disulfide bonds (perming hair breaks and reforms them)." },
+{ cat:"aminoacids", lec:"l34",
+  q:"Which amino acids are ONLY ketogenic?",
+  a:"Leucine (Leu) and Lysine (Lys) — the ONLY two purely ketogenic amino acids. They are degraded solely to acetyl-CoA / ketone bodies and CANNOT enter gluconeogenesis.",
+  note:"In DKA or starvation, Leu and Lys contribute only to ketone body production, not to raising blood glucose." },
+{ cat:"aminoacids", lec:"l34",
+  q:"Which amino acids are BOTH glucogenic AND ketogenic?",
+  a:"Phenylalanine, Tyrosine, Tryptophan, and Isoleucine. They can enter BOTH gluconeogenesis AND ketogenesis.",
+  note:"All three aromatic amino acids (Phe, Tyr, Trp) are in this category plus Ile. Gives metabolic flexibility during fasting." },
+{ cat:"aminoacids", lec:"l34",
+  q:"Name the three aromatic amino acids and their key features.",
+  a:"Phenylalanine (Phe, F): nonpolar aromatic | Tyrosine (Tyr, Y): polar aromatic (–OH group) | Tryptophan (Trp, W): nonpolar, largest AA (indole ring).",
+  note:"All three absorb UV light at ~280 nm — used to measure protein concentration (A₂₈₀). Trp is the precursor to serotonin and melatonin." },
+{ cat:"aminoacids", lec:"l34",
+  q:"Which two amino acids contain sulfur, and how do they differ?",
+  a:"Cysteine (–SH, thiol group): forms disulfide bonds. Methionine (–S–CH₃, thioether): cannot form disulfide bonds; is the START codon amino acid (AUG).",
+  note:"Met is always the first amino acid translated (start codon AUG). It may be cleaved post-translationally. Met provides methyl groups via S-adenosylmethionine (SAM)." },
+{ cat:"aminoacids", lec:"l34",
+  q:"What is GABA, and how is it formed?",
+  a:"GABA (gamma-aminobutyric acid) is the main INHIBITORY neurotransmitter in the CNS. Formed from Glutamate by Glutamate decarboxylase (requires Vitamin B6).",
+  note:"GABA deficiency → seizures. It is a non-proteinogenic amino acid — not incorporated into proteins. It hyperpolarizes neurons by opening Cl⁻ channels." },
+{ cat:"aminoacids", lec:"l34",
+  q:"What are Ornithine and Citrulline, and what is their role?",
+  a:"Both are urea cycle intermediates. Ornithine: ammonia detoxification (receives carbamoyl group). Citrulline: also involved in nitric oxide (NO) synthesis.",
+  note:"The urea cycle occurs in the LIVER: NH₃ (toxic) + CO₂ → Urea (non-toxic, excreted in urine). Failure → hyperammonemia → encephalopathy." },
+{ cat:"classification", lec:"l34",
+  q:"List the four polarity classes of amino acids with members.",
+  a:"Nonpolar/hydrophobic: Gly, Ala, Val, Leu, Ile, Met, Pro, Phe, Trp (9). Polar uncharged: Ser, Thr, Asn, Gln, Tyr, Cys (6). Acidic (−): Asp, Glu (2). Basic (+): Lys, Arg, His (3).",
+  note:"Hydrophobic AAs cluster in the protein CORE (away from water). Charged AAs are usually on the protein SURFACE, interacting with the aqueous environment." },
+{ cat:"classification", lec:"l34",
+  q:"Why does polarity classification matter for protein structure?",
+  a:"Hydrophobic residues → protein interior (core) | Hydrophilic residues → protein surface (exposed to water). This amphipathic arrangement drives protein folding.",
+  note:"Also determines: enzyme active site reactivity, protein-protein interactions, membrane protein topology, and drug binding sites." },
+{ cat:"classification", lec:"l34",
+  q:"What are the hydroxyl-containing amino acids and why are they important?",
+  a:"Serine (Ser, S), Threonine (Thr, T), Tyrosine (Tyr, Y). The –OH group makes them polar and uncharged.",
+  note:"Ser, Thr, and Tyr are the main PHOSPHORYLATION SITES in cell signaling. Kinases add phosphate → changes protein activity. This is a key regulatory mechanism." },
+{ cat:"classification", lec:"l34",
+  q:"What are the amide-containing amino acids?",
+  a:"Asparagine (Asn, N) and Glutamine (Gln, Q). Both have –CONH₂ (amide) in the side chain.",
+  note:"Gln is the main carrier of nitrogen in the blood for ammonia transport. Asn is the site of N-linked glycosylation (attachment of sugar chains to proteins)." },
+{ cat:"classification", lec:"l34",
+  q:"Compare acidic (Asp, Glu) vs. basic (Lys, Arg, His) amino acids.",
+  a:"Acidic: extra –COOH in side chain → donate H⁺ → negatively charged at pH 7.4. Basic: extra –NH₂/guanidinium group → accept H⁺ → positively charged at pH 7.4.",
+  note:"Acidic AAs interact with positively charged molecules (e.g. metal ions). Basic AAs bind negatively charged molecules like DNA phosphate backbone (histones are rich in Lys & Arg)." },
+{ cat:"classification", lec:"l34",
+  q:"Name the secondary bonds that stabilize protein structure and which AAs form them.",
+  a:"Disulfide bonds: Cys–Cys | Hydrogen bonds: Ser, Thr, Tyr, Asn, Gln | Ionic (electrostatic): Asp, Glu, Lys, Arg, His | Hydrophobic interactions: Ala, Val, Leu, Ile, Met, Phe, Trp",
+  note:"Disulfide bonds are COVALENT (strongest non-peptide bond). All others are non-covalent but collectively very strong. They stabilize tertiary and quaternary structure." },
+{ cat:"classification", lec:"l34",
+  q:"Summarize metabolic classification: glucogenic vs. ketogenic.",
+  a:"Glucogenic only: Ala, Ser, Gln, Gly, Asp, Glu, Pro, Asn, Arg, His, Cys, Met, Thr, Val | Ketogenic only: Leu, Lys | Both: Phe, Tyr, Trp, Ile",
+  note:"Glucogenic AAs enter gluconeogenesis (→ glucose). Ketogenic AAs are converted to ketone bodies (→ acetyl-CoA). Important in diabetes, fasting, and inborn errors of metabolism." },
+{ cat:"peptide", lec:"l5",
+  q:"What is a peptide bond? Where does it form?",
+  a:"A COVALENT bond between the alpha-CARBOXYL group of one amino acid and the alpha-AMINO group of another. The C-N bond that forms is the actual peptide bond.",
+  note:"All proteins are held together by peptide bonds. The backbone reads: ...CO-NH-Ca(R)-CO-NH-Ca(R)... Peptide bonds are the backbone covalent scaffold of life." },
+{ cat:"peptide", lec:"l5",
+  q:"What reaction forms a peptide bond? What is released?",
+  a:"CONDENSATION (dehydration) reaction. The -OH from the carboxyl and -H from the amino group combine and are released as ONE molecule of WATER (H2O).",
+  note:"Reverse reaction = HYDROLYSIS (adds water to break the bond). In vivo, proteases catalyze hydrolysis. In the lab, strong acid/base + heat. Peptide bonds resist spontaneous hydrolysis." },
+{ cat:"peptide", lec:"l5",
+  q:"What is the PARTIAL DOUBLE-BOND character of the peptide bond?",
+  a:"The C-N peptide bond is formally single, but RESONANCE between C=O and C-N delocalizes electrons, giving the C-N bond ~40% double-bond character. Two resonance forms: O=C-N-H (normal) and O(-)-C=N(+)-H (resonance).",
+  note:"Direct consequence: rotation around C-N is RESTRICTED (unlike a normal single bond). Bond length is intermediate (~1.32 A) between C-N single (~1.47 A) and C=N double (~1.27 A)." },
+{ cat:"peptide", lec:"l5",
+  q:"What is the PLANARITY of the peptide bond?",
+  a:"All SIX atoms of the peptide unit lie in ONE flat plane: Ca-C-O-N-H-Ca (carbonyl C and O, amide N and H, and the two flanking alpha-carbons). This planar unit is called the PEPTIDE PLANE.",
+  note:"The partial double bond prevents rotation around C-N, making the plane rigid. Only phi (N-Ca) and psi (Ca-C) angles can rotate, severely limiting backbone conformations." },
+{ cat:"peptide", lec:"l5",
+  q:"What are phi (phi) and psi (psi) angles?",
+  a:"phi: rotation angle around the N-Ca bond. psi: rotation angle around the Ca-C bond. These are the ONLY backbone bonds that can rotate freely. All other backbone bonds are constrained.",
+  note:"Allowed phi/psi combinations form a Ramachandran plot. Alpha-helices, beta-sheets, and beta-turns occupy distinct regions. Forbidden regions = steric clashes between backbone atoms." },
+{ cat:"peptide", lec:"l5",
+  q:"TRANS vs CIS configuration: which is preferred and why?",
+  a:"TRANS (~99%): adjacent Ca atoms are on OPPOSITE sides of the C-N bond. Less steric clash between R-groups. CIS (~1%): adjacent Ca on the SAME side. More steric clash, energetically UNFAVORABLE.",
+  note:"Energy difference = ~2 kcal/mol. Exception: X-Pro peptide bonds have ~10% cis because Pro's ring reduces the energy difference between cis and trans." },
+{ cat:"peptide", lec:"l5",
+  q:"What is polypeptide DIRECTIONALITY?",
+  a:"Polypeptides have direction: N-terminus (free amino group, -NH3+) to C-terminus (free carboxyl group, -COO-). Proteins are written, synthesized (ribosomes), and conventionally read from N to C.",
+  note:"DNA codons are read 5' to 3', which translates to N to C synthesis. The first amino acid added = N-terminal. Each new amino acid is added to the C-terminal end." },
+{ cat:"peptide", lec:"l5",
+  q:"How many peptide bonds does a polypeptide of n amino acids have?",
+  a:"A polypeptide of n amino acids has (n-1) peptide bonds. Dipeptide = 2 AAs, 1 bond. Tripeptide = 3 AAs, 2 bonds. A protein of 300 AAs has 299 peptide bonds.",
+  note:"Each bond forms with loss of one H2O. So n amino acids linked = (n-1) water molecules released. Total mass of polypeptide = sum of AA masses - (n-1) x 18 (mass of H2O)." },
+{ cat:"peptide", lec:"l5",
+  q:"Why is the TRANS configuration so strongly preferred over CIS (~99% vs ~1%)?",
+  a:"In TRANS, the two bulky R-groups of adjacent amino acids point to OPPOSITE sides of the C-N bond, minimizing steric clash. In CIS, they crowd onto the SAME side, creating severe steric repulsion.",
+  note:"Only X-Pro bonds tolerate ~10% cis because Pro's cyclic ring partially constrains the preceding C, making both configurations geometrically possible with less energy penalty." },
+{ cat:"peptide", lec:"l5",
+  q:"Why does the partial double-bond character restrict rotation?",
+  a:"Double bonds CANNOT rotate freely. The partial double-bond character of the peptide C-N bond raises the rotational barrier significantly compared to a true single bond. Rotation would destroy resonance stabilization.",
+  note:"Full rotation around C-N would cost ~20 kcal/mol energy to overcome the resonance stabilization. By contrast, phi and psi rotations around single bonds cost much less energy." },
+{ cat:"peptide", lec:"l5",
+  q:"What six atoms form the PEPTIDE PLANE?",
+  a:"Ca(i) - C - O - N - H - Ca(i+1). The carbonyl carbon (C), carbonyl oxygen (O), amide nitrogen (N), amide hydrogen (H), and the two flanking alpha-carbons (Ca of residue i and Ca of residue i+1).",
+  note:"The O and H both project out from the backbone plane. These atoms form the H-bond donors and acceptors in secondary structures (C=O accepts, N-H donates)." },
+{ cat:"peptide", lec:"l5",
+  q:"What is the N-terminus and C-terminus? Which amino acid is each?",
+  a:"N-terminus: end with free alpha-amino group (-NH3+) = FIRST amino acid in sequence. C-terminus: end with free alpha-carboxyl group (-COO-) = LAST amino acid. Convention: written left (N) to right (C).",
+  note:"The N-terminal amino acid has no peptide bond on its amino side. The C-terminal has no peptide bond on its carboxyl side. All internal AAs have two peptide bonds." },
+{ cat:"peptide", lec:"l5",
+  q:"What is HYDROLYSIS of a peptide bond?",
+  a:"The reverse of condensation: water (H2O) is ADDED to break the C-N peptide bond, regenerating free amino and carboxyl groups. Requires a catalyst: protease enzyme (in vivo) or strong acid/base with heat (in vitro).",
+  note:"Complete acid hydrolysis (6M HCl, 110C, 24h) gives all free amino acids. Proteases provide specificity: trypsin cleaves after Arg/Lys, chymotrypsin after Phe/Tyr/Trp/Met." },
+{ cat:"peptide", lec:"l5",
+  q:"Why are peptide bonds chemically STABLE?",
+  a:"Resonance stabilization raises the activation energy for hydrolysis. Despite thermodynamic favorability of hydrolysis, the kinetic barrier is HIGH. Spontaneous hydrolysis under physiological conditions is negligible.",
+  note:"Half-life for spontaneous peptide hydrolysis at neutral pH, 25C = hundreds of years! This stability allows proteins to persist and function. Proteases lower this barrier enzymatically." },
+{ cat:"peptide", lec:"l5",
+  q:"What is a DIPEPTIDE? Give an example.",
+  a:"Two amino acids joined by ONE peptide bond. Example: Ala-Gly (alanylglycine). The N-terminal Ala has a free -NH3+. The C-terminal Gly has a free -COO-. The bond is between Ala's carbonyl C and Gly's N.",
+  note:"Biologically active dipeptides exist: carnosine (beta-Ala-His, in muscle), anserine (muscle), glutathione (tripeptide: Glu-Cys-Gly), oxytocin and vasopressin (nonapeptides)." },
+{ cat:"peptide", lec:"l5",
+  q:"What is the difference between a PEPTIDE and a PROTEIN?",
+  a:"Peptide: short chain of amino acids (<50 AAs typically). Protein: longer polypeptide that has folded into a STABLE FUNCTIONAL 3D structure. The distinction is blurry — defined more by folding than by length.",
+  note:"Insulin (51 AAs) = protein. Oxytocin (9 AAs) = peptide. A polypeptide becomes a protein when it achieves a stable functional conformation. Some proteins are multiple polypeptides together." },
+{ cat:"peptide", lec:"l5",
+  q:"What does planarity ALLOW proteins to do?",
+  a:"Planarity LIMITS conformational freedom, creating DEFINED RIGID UNITS (peptide planes) linked by rotatable hinges (Ca atoms). This allows formation of repeating secondary structures like alpha-helices and beta-sheets.",
+  note:"Without planarity, the backbone would be too flexible for ordered structures. The rigid planes give proteins the structural regularity needed for precise molecular recognition." },
+{ cat:"peptide", lec:"l5",
+  q:"What is special about X-Pro peptide bonds?",
+  a:"Peptide bonds preceding PROLINE (X-Pro bonds) have ~10% CIS configuration (vs ~1% for all other bonds). Pro's cyclic pyrrolidine ring reduces the energy difference between cis and trans for the preceding peptide bond.",
+  note:"Some proteins REQUIRE cis-Pro bonds for function (e.g., procollagen processing enzymes, some immune receptors). PROLYL ISOMERASES catalyze cis-trans isomerization and can be rate-limiting in protein folding." },
+{ cat:"peptide", lec:"l5",
+  q:"What happens to water during peptide bond FORMATION vs HYDROLYSIS?",
+  a:"Formation: water is RELEASED (condensation/dehydration). Hydrolysis: water is CONSUMED (added to break the bond). Ribosomal peptide bond synthesis is endergonic - driven by GTP hydrolysis in the translation machinery.",
+  note:"Each peptide bond formation releases one H2O. A protein of 100 AAs consumes 99 H2O molecules during hydrolysis. In industry, protein hydrolysates (e.g., soy sauce, flavoring) are made by acid hydrolysis." },
+{ cat:"peptide", lec:"l5",
+  q:"How does the peptide bond CREATE protein backbone structure?",
+  a:"Alternating RIGID PLANAR units (peptide planes) connected by flexible hinges at Ca atoms (phi and psi rotations). This creates a polymer with defined possible conformations — only specific phi/psi pairs are sterically allowed.",
+  note:"Think of it as beads on a string where each bead is a rigid flat plank and the string can only rotate at specific points. This architecture directly enables alpha-helices and beta-sheets." },
+{ cat:"primary", lec:"l5",
+  q:"Define PRIMARY STRUCTURE of a protein.",
+  a:"The LINEAR SEQUENCE of amino acids in the polypeptide chain, covalently linked by peptide bonds, written from N-terminus to C-terminus. Example: Ala-Gly-Ser-Leu-...",
+  note:"Primary structure is the FIRST and most fundamental level of protein organization. It is encoded by the gene and determines ALL higher-order structural levels." },
+{ cat:"primary", lec:"l5",
+  q:"How is primary structure ENCODED and SYNTHESIZED?",
+  a:"Gene (DNA) is transcribed to mRNA. Ribosome translates mRNA codons (5' to 3') into amino acids (N to C). Each codon (3 nucleotides) specifies one amino acid via the genetic code.",
+  note:"Central dogma: DNA to mRNA (transcription) to Protein (translation). The primary structure is a direct linear readout of the mRNA sequence, which reflects the DNA gene sequence." },
+{ cat:"primary", lec:"l5",
+  q:"What type of bonds maintain primary structure? Why is it stable?",
+  a:"PEPTIDE BONDS - strong COVALENT bonds. They are planar, resistant to spontaneous hydrolysis under physiological conditions, and have partial double-bond character that resists rotation.",
+  note:"Covalent bonds (~200-400 kJ/mol) are much stronger than H-bonds (~4-20 kJ/mol), ionic interactions (~20 kJ/mol), or van der Waals forces (~1-5 kJ/mol) that stabilize higher structures." },
+{ cat:"primary", lec:"l5",
+  q:"What does primary structure DETERMINE?",
+  a:"Primary structure determines EVERYTHING: secondary structure (folding patterns), tertiary structure (3D shape), quaternary structure (subunit assembly), and ultimately the protein's FUNCTION, stability, and interactions.",
+  note:"Anfinsen's dogma: the primary amino acid sequence contains ALL information needed to specify the native 3D structure. Proven by ribonuclease refolding experiments (Nobel Prize 1972)." },
+{ cat:"primary", lec:"l5",
+  q:"How can ONE amino acid substitution cause disease?",
+  a:"One AA change can: disrupt local folding | break or create wrong interactions (H-bonds, ionic, hydrophobic) | alter 3D shape | affect active site or binding sites | cause loss of function, gain of toxic function, or aggregation.",
+  note:"Examples: SCD (Glu6Val in hemoglobin), PKU (Phe hydroxylase mutation), Marfan syndrome (fibrillin), many cancers (p53, KRAS point mutations). Even conservative substitutions can be devastating at key positions." },
+{ cat:"primary", lec:"l5",
+  q:"What is the MOLECULAR DEFECT in Sickle Cell Disease?",
+  a:"A point mutation in the beta-globin gene: GAG to GTG. This changes codon 6 from Glutamate (Glu, E) to VALINE (Val, V) in the hemoglobin beta-chain. Result: HbS (sickle hemoglobin) instead of HbA.",
+  note:"HbS = alpha2-betaS2. Under low O2, HbS polymerizes. Under normal O2, HbS behaves normally - explains why sickle crisis is triggered by low O2 states (high altitude, infection, exercise)." },
+{ cat:"primary", lec:"l5",
+  q:"WHY does the Glu-to-Val mutation cause hemoglobin to POLYMERIZE?",
+  a:"Glutamate (Glu) is POLAR/CHARGED (hydrophilic). Valine (Val) is NONPOLAR (hydrophobic). The hydrophobic Val6 creates a sticky hydrophobic patch on the beta-chain surface that fits into a hydrophobic pocket on an adjacent deoxyhemoglobin molecule.",
+  note:"Under low O2: deoxyhemoglobin conformation exposes a hydrophobic pocket. The Val6 patch of one HbS fits into this pocket of another, triggering polymer formation. High O2: conformation changes, pocket closes, no sickling." },
+{ cat:"primary", lec:"l5",
+  q:"What is DENATURATION and what happens to primary structure?",
+  a:"Denaturation disrupts secondary, tertiary, and quaternary structure (breaking non-covalent bonds + reducing disulfide bonds). PRIMARY STRUCTURE REMAINS INTACT - peptide bonds are too strong to be broken by typical denaturing conditions.",
+  note:"Examples: heat (breaks H-bonds), urea (disrupts hydrophobic interactions and H-bonds), SDS (detergent), extreme pH. Boiling an egg denatures proteins but does not hydrolyze peptide bonds." },
+{ cat:"primary", lec:"l5",
+  q:"Can a DENATURED protein REFOLD to its native structure?",
+  a:"YES, in principle. If primary structure is intact and conditions allow (right pH, temperature, reducing environment), many proteins can refold SPONTANEOUSLY because the native structure is the lowest free energy state for that sequence.",
+  note:"Anfinsen showed this with RNase A: denatured with urea + beta-mercaptoethanol, then removed them -> full activity restored. This proved sequence alone encodes structure. In vivo, chaperones assist refolding." },
+{ cat:"primary", lec:"l5",
+  q:"Why is primary structure the MOST FUNDAMENTAL level?",
+  a:"Because ALL higher-order structures (2 degrees, 3 degrees, 4 degrees) are CONSEQUENCES of the primary sequence. A mutation here cascades to disrupt all higher levels. Primary structure is also uniquely COVALENT (more stable than non-covalent higher structures).",
+  note:"This is why genetic mutations can be catastrophic - a single nucleotide change can alter primary structure, which then alters secondary, tertiary, and quaternary structure, and ultimately function." },
+{ cat:"primary", lec:"l5",
+  q:"What information about a protein can you determine from primary structure alone?",
+  a:"From primary structure you can predict: approximate secondary structure (helix/sheet propensities), hydrophobic/hydrophilic regions, likely disulfide bond positions (Cys-Cys), functional motifs, evolutionary relationships, and sometimes 3D structure (via homology modeling).",
+  note:"Modern computational tools (AlphaFold2) can predict 3D structure from primary sequence alone with remarkable accuracy. This validates Anfinsen's dogma computationally." },
+{ cat:"secondary", lec:"l5",
+  q:"Define SECONDARY STRUCTURE.",
+  a:"Regularly REPEATING folding patterns of the polypeptide BACKBONE, stabilized by hydrogen bonds between backbone C=O (carbonyl oxygen) and N-H (amide hydrogen). Includes alpha-helix, beta-sheet, beta-turn, and loops.",
+  note:"KEY: Secondary structure involves BACKBONE atoms ONLY, NOT side chains. Side chains are NOT part of secondary structure stabilization - they project outward and form tertiary interactions." },
+{ cat:"secondary", lec:"l5",
+  q:"What stabilizes ALL secondary structures?",
+  a:"HYDROGEN BONDS between backbone C=O (electron-rich, H-bond ACCEPTOR) and backbone N-H (H-bond DONOR). These are backbone-to-backbone H-bonds, not involving side chains.",
+  note:"Each H-bond = ~4-20 kJ/mol individually. But secondary structures have many H-bonds cooperating -> collectively very stabilizing. Cooperative H-bonds resist disruption much better than isolated ones." },
+{ cat:"secondary", lec:"l5",
+  q:"Describe the ALPHA-HELIX structure.",
+  a:"A right-handed coiled spiral. Chain twists CLOCKWISE viewed from N-terminus. H-bond: C=O of residue i bonds N-H of residue i+4. 3.6 amino acids per turn. Rise per residue: 1.5 Angstrom. R-groups point OUTWARD.",
+  note:"Alpha-helix is the most common secondary structure. It appears in: transmembrane domains, keratin coiled-coils, transcription factor DNA-binding domains, oxygen-binding globins." },
+{ cat:"secondary", lec:"l5",
+  q:"What is the H-bond pattern in alpha-helix? Which residues bond?",
+  a:"C=O of residue i bonds N-H of residue i+4. Every 4th residue. This means residues 1,5,9,13... are on one face. The H-bond runs roughly PARALLEL to the helix axis.",
+  note:"i+4 is the CRITICAL NUMBER for alpha-helices. Compare: beta-turns use i+3. A helix of 12 residues has ~11 H-bonds (the first 4 residues donate/accept from residues 5-8 etc.)." },
+{ cat:"secondary", lec:"l5",
+  q:"How many residues per turn in alpha-helix? What is the pitch?",
+  a:"3.6 residues per turn. Pitch (distance for one full turn) = 3.6 x 1.5 Angstrom = 5.4 Angstrom. There is a 100-degree rotation between consecutive residues.",
+  note:"The 100-degree rotation means every 3.6 residues completes 360 degrees. This is why residues 1, 5, 9, 13... face the same direction in the helix (each ~100 degrees apart, 4 x 100 = 400 = ~360 degrees + 40)." },
+{ cat:"secondary", lec:"l5",
+  q:"Where do R-groups point in alpha-helix?",
+  a:"R-groups (side chains) point OUTWARD and away from the helical axis, projecting into the surrounding environment. The helix CORE contains only backbone atoms.",
+  note:"Outward R-groups can be: hydrophilic (face aqueous environment), hydrophobic (face other protein domains or lipid membrane), or form specific interactions with binding partners." },
+{ cat:"secondary", lec:"l5",
+  q:"Name the HELIX BREAKERS and explain WHY they break helices.",
+  a:"PROLINE: pyrrolidine ring bonds back to N, creating secondary amine with NO N-H to donate H-bonds, AND prevents phi angle rotation needed for helix. GLYCINE: no side chain, excessive flexibility, too many conformational options to maintain helix regularity.",
+  note:"Pro breaks the i to i+4 H-bond pattern AND introduces a kink. Gly disrupts helix by having too many accessible phi/psi angles - it is 'too flexible' to adopt a single helix conformation." },
+{ cat:"secondary", lec:"l5",
+  q:"Why does PROLINE break alpha-helices specifically?",
+  a:"Proline's pyrrolidine ring: (1) forms a bond to the backbone nitrogen, creating a SECONDARY AMINE - there is NO N-H hydrogen to donate H-bonds in the helix. (2) Restricts phi angle rotation, preventing the correct backbone geometry for helix formation.",
+  note:"Pro-preceding peptide bonds are also more frequently CIS, further disrupting the backbone geometry. Despite helix-breaking, Pro is abundant in beta-turns and collagen where bending is desired." },
+{ cat:"secondary", lec:"l5",
+  q:"Name the HELIX FORMERS.",
+  a:"Alanine (Ala), Leucine (Leu), Glutamate (Glu), Methionine (Met). Their side chains are compatible with helical geometry without steric clash.",
+  note:"Alanine has the HIGHEST helix propensity of all 20 amino acids. Its small methyl side chain fits perfectly into the tight helical backbone without steric interference." },
+{ cat:"secondary", lec:"l5",
+  q:"What is a BETA-SHEET?",
+  a:"A secondary structure where multiple BETA-STRANDS align side-by-side and form H-bonds BETWEEN ADJACENT STRANDS (not within a single strand). Creates a flat, pleated sheet-like structure.",
+  note:"Beta-sheets are abundant in: immunoglobulin folds, beta-barrels (porins), TIM barrels, silk fibroin, amyloid fibers, and the cores of many globular proteins." },
+{ cat:"secondary", lec:"l5",
+  q:"What is a BETA-STRAND?",
+  a:"A single, EXTENDED (stretched-out), zig-zag polypeptide segment 5-10 residues long. The backbone is almost fully extended. R-groups alternate pointing UP and DOWN from the strand plane.",
+  note:"Multiple beta-strands laterally H-bonded together = beta-sheet. A single strand alone is not a beta-sheet. Strands must interact with at least one adjacent strand." },
+{ cat:"secondary", lec:"l5",
+  q:"Compare PARALLEL vs ANTIPARALLEL beta-sheets.",
+  a:"PARALLEL: strands run SAME direction (N-C and N-C). H-bonds are ANGLED. WEAKER, less stable. LESS COMMON. ANTIPARALLEL: strands run OPPOSITE directions (N-C and C-N). H-bonds are STRAIGHT. STRONGER, more stable. MORE COMMON.",
+  note:"EXAM RULE: Antiparallel = Straight H-bonds = Stronger. Parallel = Angled H-bonds = Weaker. Antiparallel sheets form naturally when chain reverses direction via hairpins." },
+{ cat:"secondary", lec:"l5",
+  q:"Why is ANTIPARALLEL beta-sheet more stable?",
+  a:"In antiparallel sheets, H-bonds run PERPENDICULAR (straight) across the strands. This optimal geometry allows maximum orbital overlap between C=O and N-H. In parallel, the angled geometry reduces orbital overlap efficiency.",
+  note:"The straight H-bonds in antiparallel sheets also allow better van der Waals packing between strands. Antiparallel sheets are also more tightly packed (closer interstrand distance)." },
+{ cat:"secondary", lec:"l5",
+  q:"What is a BETA-TURN?",
+  a:"A tight, 180-degree change in polypeptide chain direction. Spans exactly 4 residues (i, i+1, i+2, i+3). One H-bond: C=O of residue i with N-H of residue i+3. Located on protein surface.",
+  note:"Beta-turns connect secondary structure elements. Without turns, the chain could not loop back to form compact globular proteins. They are found on the protein surface where sharp bends are needed." },
+{ cat:"secondary", lec:"l5",
+  q:"Which amino acids are common in BETA-TURNS and why?",
+  a:"GLYCINE (positions i+1, i+2): tiny, maximally flexible, allows phi/psi angles not accessible to other AAs needed for the sharp turn geometry. PROLINE (position i+1): rigid ring forces the specific backbone angle required.",
+  note:"Ser and Asp are also common in turns. Turns are frequently post-translationally modified (phosphorylation, glycosylation) - their surface exposure makes them accessible to modifying enzymes." },
+{ cat:"secondary", lec:"l5",
+  q:"What is a BETA-HAIRPIN?",
+  a:"A structural motif: two ANTIPARALLEL beta-strands connected by a short TURN (typically a beta-turn). The chain doubles back on itself. It is the simplest supersecondary structural motif.",
+  note:"Multiple hairpins together create antiparallel beta-sheets. A series of hairpins forms a beta-meander or beta-propeller. Very common - virtually all beta-sheet proteins contain hairpins." },
+{ cat:"secondary", lec:"l5",
+  q:"What are LOOPS?",
+  a:"Longer (typically 6-16 AAs, variable), IRREGULAR, FLEXIBLE regions with NO stable repeating backbone H-bond pattern. Located on protein SURFACE. Contain HYDROPHILIC (polar) residues.",
+  note:"Loops are NOT unstructured junk - they are critical functional elements. Active site loops, CDR loops in antibodies, omega loops. Their flexibility allows induced-fit binding to ligands." },
+{ cat:"secondary", lec:"l5",
+  q:"What are the FUNCTIONS of loops?",
+  a:"1. Connect alpha-helices and beta-sheets. 2. Allow protein surface flexibility. 3. Form BINDING SITES for ligands, substrates, antibodies. 4. Enzyme ACTIVE SITES (catalytic loops). 5. SITES for post-translational modifications (phosphorylation, glycosylation).",
+  note:"Catalytic loops can swing into the active site to participate in catalysis. CDR loops of antibodies determine antigen specificity. Loops evolve faster than helices/sheets - allowing functional diversity." },
+{ cat:"secondary", lec:"l5",
+  q:"What is SUPERSECONDARY STRUCTURE?",
+  a:"Recurring combinations of secondary structure elements that appear in many different proteins. Examples: Helix-turn-helix (HTH), beta-alpha-beta motif, beta-hairpin, Greek key motif, coiled-coil.",
+  note:"Supersecondary structures are building blocks of protein DOMAINS. They represent conserved architectural solutions to structural problems that evolved early and were reused repeatedly." },
+{ cat:"secondary", lec:"l5",
+  q:"Why does the alpha-helix have 3.6 residues per turn (not exactly 3 or 4)?",
+  a:"3.6 per turn = 100 degrees rotation per residue. This gives the optimal geometry for the i to i+4 H-bond pattern to form with proper N-H...O angle and distance. Exactly 3 or 4 would create different (unfavorable) H-bond angles.",
+  note:"The 3.6 value is experimentally measured by X-ray crystallography and confirmed computationally. Any deviation forces incorrect H-bond geometry, weakening the helix. This is the energetically optimal helical pitch." },
+{ cat:"tertiary", lec:"l5",
+  q:"What is TERTIARY STRUCTURE?",
+  a:"The overall 3D shape of a SINGLE polypeptide chain, resulting from the folding of secondary structures into a compact, functional protein. It is the protein's characteristic shape.",
+  note:"Tertiary structure is stabilized by side-chain interactions (not backbone H-bonds). It gives proteins their active sites, binding pockets, and biological identity." },
+{ cat:"tertiary", lec:"l5",
+  q:"What is a STRUCTURAL MOTIF?",
+  a:"A small, RECOGNIZABLE combination of secondary structure elements that recur in many different proteins. They are smaller than domains. Examples: Helix-Turn-Helix (DNA binding), beta-alpha-beta motif, beta-hairpin.",
+  note:"Motifs are conserved because they solve fundamental structural/functional problems efficiently. The HTH motif appears in hundreds of DNA-binding proteins across all domains of life." },
+{ cat:"tertiary", lec:"l5",
+  q:"What is a PROTEIN DOMAIN?",
+  a:"A large (typically 100-300 AAs), INDEPENDENTLY FOLDING structural and functional unit within a protein. Can fold correctly even when isolated from the rest of the protein. Has a SPECIFIC FUNCTION.",
+  note:"Multi-domain proteins have each domain with different functions. Example: kinase domain (catalysis) + SH2 domain (binding phosphotyrosine) + SH3 domain (binding proline-rich sequences)." },
+{ cat:"tertiary", lec:"l5",
+  q:"Give examples of protein domains and their functions.",
+  a:"SH2 domain: binds phosphotyrosine (signal transduction). Kinase domain: phosphorylates substrates. Ig (immunoglobulin) domain: stability and protein interactions. PH domain: binds membrane phosphoinositides. SH3: binds proline-rich sequences.",
+  note:"Domain shuffling (combining domains from different genes) is a major evolutionary mechanism for generating proteins with new functions. Most eukaryotic proteins are multi-domain." },
+{ cat:"tertiary", lec:"l5",
+  q:"What are the FIVE forces that stabilize tertiary structure?",
+  a:"1. HYDROPHOBIC INTERACTIONS (most important). 2. HYDROGEN BONDS (between polar side chains). 3. IONIC INTERACTIONS/salt bridges (charged side chains). 4. DISULFIDE BONDS (only COVALENT force). 5. VAN DER WAALS interactions (weakest).",
+  note:"All five forces act cooperatively. Hydrophobic collapse drives the initial folding. H-bonds and ionic interactions provide specificity. Disulfide bonds lock the structure. vdW provides fine shape complementarity." },
+{ cat:"tertiary", lec:"l5",
+  q:"Why are HYDROPHOBIC INTERACTIONS the most important force in tertiary structure?",
+  a:"When hydrophobic R-groups cluster in the protein core away from water, they increase WATER ENTROPY (water molecules are freed from ordered hydration shells). This entropy gain is the dominant thermodynamic driving force for folding.",
+  note:"This is called the HYDROPHOBIC EFFECT. Counterintuitively, burying hydrophobic groups is entropically FAVORABLE (increases water disorder), even though it requires bringing nonpolar groups together." },
+{ cat:"tertiary", lec:"l5",
+  q:"Which is the ONLY COVALENT stabilizing force in tertiary structure?",
+  a:"DISULFIDE BONDS (S-S bonds) between two CYSTEINE residues. Both -SH thiol groups are oxidized to form a covalent -S-S- bond. All other tertiary structure forces are non-covalent.",
+  note:"Disulfide bonds are mainly in EXTRACELLULAR proteins and secreted proteins (oxidizing environment). Intracellular proteins usually lack them (reducing cytoplasm keeps Cys as -SH). Examples: insulin, immunoglobulins, ribonuclease." },
+{ cat:"tertiary", lec:"l5",
+  q:"What is QUATERNARY STRUCTURE?",
+  a:"The assembly of TWO OR MORE polypeptide chains (subunits) to form a functional protein complex. A single polypeptide chain CANNOT have quaternary structure by definition.",
+  note:"Each individual polypeptide chain = one SUBUNIT. Quaternary structure emerges from interactions BETWEEN subunits. Not all proteins have quaternary structure (many functional proteins are monomeric)." },
+{ cat:"tertiary", lec:"l5",
+  q:"What is HOMOMERIC vs HETEROMERIC quaternary structure?",
+  a:"HOMOMERIC: ALL subunits are IDENTICAL. Example: beta-galactosidase (homotetramer, 4 identical subunits). HETEROMERIC: subunits are DIFFERENT types. Example: Hemoglobin (alpha2-beta2 heterotetramer, 2 alpha + 2 beta chains).",
+  note:"Most multi-subunit proteins are homomeric (simpler to encode - one gene makes all subunits). Heteromeric proteins need separate genes for each subunit type, allowing independent regulation." },
+{ cat:"tertiary", lec:"l5",
+  q:"What forces stabilize QUATERNARY structure?",
+  a:"Exactly the SAME forces as tertiary structure, but acting BETWEEN SUBUNITS instead of within one chain: hydrophobic interactions (most important), H-bonds, ionic interactions, disulfide bonds (interchain), van der Waals forces.",
+  note:"Interchain disulfide bonds (between different subunits) are important in immunoglobulins (linking light and heavy chains) and collagen. They provide extra stability to quaternary assemblies." },
+{ cat:"tertiary", lec:"l5",
+  q:"Describe HEMOGLOBIN quaternary structure.",
+  a:"Alpha2-beta2 HETEROTETRAMER: 2 alpha-chains + 2 beta-chains, held by hydrophobic interactions, H-bonds, and ionic contacts between subunits. HETEROMERIC. Each subunit carries one heme group (4 heme total).",
+  note:"Without quaternary structure, hemoglobin would be 4 independent myoglobin-like monomers with NO cooperativity. The tetramer enables the sigmoid O2 curve, Bohr effect, and BPG regulation." },
+{ cat:"tertiary", lec:"l5",
+  q:"Describe COLLAGEN quaternary structure.",
+  a:"TRIPLE HELIX: three polypeptide chains (alpha-chains) wound together. Each individual chain is a left-handed helix. Three chains form a right-handed super-helix. Requires Gly at every 3rd position (Gly-X-Y repeats).",
+  note:"Gly must be at every 3rd position because it is the only AA small enough to fit in the center of the triple helix. Pro and Hyp (hydroxyproline) are common at X and Y positions." },
+{ cat:"tertiary", lec:"l5",
+  q:"Summary table: 4 levels of protein structure.",
+  a:"1st PRIMARY: AA sequence, peptide bonds, no folding. 2nd SECONDARY: local backbone patterns (H-bonds), alpha-helix/beta-sheet. 3rd TERTIARY: full 3D of ONE chain (side chain interactions). 4th QUATERNARY: 2+ chains together (inter-subunit forces).",
+  note:"Each level builds on the previous. Mutations in primary cascade through all levels. Only quaternary requires 2+ polypeptides. Chaperones assist 2nd-4th levels but do NOT determine the structure." },
+{ cat:"chaperones", lec:"l5",
+  q:"What is PROTEIN FOLDING?",
+  a:"The process by which a newly synthesized LINEAR polypeptide chain spontaneously acquires its correct, FUNCTIONAL 3D structure. Driven by thermodynamics - the native state is the lowest free energy conformation for that sequence.",
+  note:"Folding occurs in microseconds to seconds in vivo. Despite incredible speed and complexity, it is spontaneous. Chaperones assist but the sequence determines where the protein ENDS UP." },
+{ cat:"chaperones", lec:"l5",
+  q:"What DRIVES protein folding?",
+  a:"1. HYDROPHOBIC COLLAPSE: dominant force - nonpolar groups bury in the core. 2. Hydrogen bond formation (backbone and side chain). 3. Ionic interactions. 4. Disulfide bond formation. 5. Van der Waals. Together, they minimize free energy.",
+  note:"Thermodynamically: folding is driven by ENTROPY INCREASE of surrounding water (hydrophobic effect) and ENTHALPY DECREASE from H-bonds and other interactions. The native state has minimum free energy." },
+{ cat:"chaperones", lec:"l5",
+  q:"What is protein MISFOLDING and what diseases result?",
+  a:"Misfolding = failure to achieve correct 3D structure. Consequences: (1) LOSS OF FUNCTION. (2) TOXIC AGGREGATION. Diseases: Alzheimer's (amyloid-beta), Parkinson's (alpha-synuclein), Prion diseases (PrP), Cystic fibrosis (CFTR), Type 2 diabetes.",
+  note:"Misfolded proteins often expose hydrophobic patches that cause AGGREGATION into insoluble deposits. These aggregates can be toxic to cells. This is the basis of many neurodegenerative diseases." },
+{ cat:"chaperones", lec:"l5",
+  q:"What are MOLECULAR CHAPERONES?",
+  a:"Proteins that ASSIST other proteins in folding correctly by preventing misfolding and aggregation. They do NOT determine the final structure (sequence does) - they only help reach the correct structure efficiently.",
+  note:"Chaperones are evolutionary ancient, present in all organisms. Many are HEAT SHOCK PROTEINS (Hsp) - upregulated during stress (heat, oxidation, hypoxia) to protect the proteome from damage." },
+{ cat:"chaperones", lec:"l5",
+  q:"What is HSP70 and what does it do?",
+  a:"Heat Shock Protein 70. Binds NASCENT (newly synthesized) polypeptides EMERGING FROM RIBOSOMES. Prevents PREMATURE FOLDING before the full chain is synthesized. Also protects proteins from AGGREGATION during heat stress.",
+  note:"Hsp70 uses ATP cycling: ATP-bound = open state (low affinity, fast). ADP-bound = closed state (high affinity, tight grip on client). Co-chaperone Hsp40 stimulates ATP hydrolysis to trigger gripping." },
+{ cat:"chaperones", lec:"l5",
+  q:"What are CHAPERONINS (Hsp60 family)?",
+  a:"Large barrel-shaped complexes (14-subunit rings) that provide an ISOLATED ENCLOSED CHAMBER for protein folding. The client protein enters the barrel, the lid closes, and folding occurs in isolation, preventing aggregation.",
+  note:"Examples: GroEL/GroES in bacteria (most studied), CCT/TRiC in eukaryotes. ATP hydrolysis drives conformational changes that release the folded protein from the chamber after ~15 seconds." },
+{ cat:"chaperones", lec:"l5",
+  q:"What does HSP90 do?",
+  a:"Hsp90 specializes in folding and maintaining SIGNALING PROTEINS, especially KINASES and STEROID HORMONE RECEPTORS. It keeps them in an inactive but activation-competent conformation until their signal arrives.",
+  note:"Hsp90 is a CANCER TARGET - many oncoproteins (HER2, EGFR, BCR-ABL, mutant p53) require Hsp90 to fold and remain stable. Hsp90 inhibitors (geldanamycin, 17-AAG) cause oncoprotein degradation." },
+{ cat:"chaperones", lec:"l5",
+  q:"What are SMALL HEAT SHOCK PROTEINS (sHsps)?",
+  a:"Small, ATP-INDEPENDENT chaperones that form large oligomeric complexes (12-24 subunits). They act as HOLDING PLATFORMS - binding and storing misfolded proteins until ATP-dependent chaperones (Hsp70, Hsp90) can properly refold them.",
+  note:"sHsps are the first responders during stress. They prevent irreversible aggregation by capturing misfolded intermediates and keeping them in a refoldable state." },
+{ cat:"chaperones", lec:"l5",
+  q:"List ALL functions of molecular chaperones.",
+  a:"1. Prevent PREMATURE FOLDING of nascent chains at ribosomes. 2. Prevent MISFOLDING (bind exposed hydrophobic patches). 3. Prevent AGGREGATION in the crowded cell. 4. Help REFOLD stress-denatured proteins. 5. Target IRREVERSIBLY MISFOLDED proteins to the PROTEASOME for degradation.",
+  note:"Additional functions: assist PROTEIN TRANSLOCATION across membranes (endoplasmic reticulum, mitochondria), facilitate OLIGOMERIC ASSEMBLY, and ensure correct SUBCELLULAR LOCALIZATION of proteins." },
+{ cat:"chaperones", lec:"l5",
+  q:"CRITICAL: Do chaperones DETERMINE the final protein structure?",
+  a:"NO. Chaperones ASSIST folding and prevent off-pathway aggregation, but they do NOT determine the final 3D structure. The FINAL STRUCTURE IS DETERMINED ENTIRELY BY THE PRIMARY AMINO ACID SEQUENCE.",
+  note:"Anfinsen's Nobel Prize experiment (1972): RNase A denatured with urea + beta-ME, then dialyzed to remove them -> protein SPONTANEOUSLY refolded to full activity WITHOUT chaperones. Sequence is sufficient." },
+
+// ── DENATURATION — DEFINITION & CONSEQUENCES (10) ──────────────────
+{ cat:"denaturation", lec:"l6",
+  q:"Define protein denaturation.",
+  a:"A process in which a protein LOSES its native 3D structure due to disruption of NON-COVALENT interactions — WITHOUT breaking peptide bonds. Primary structure is preserved.",
+  note:"Key: peptide bonds (1° structure) remain INTACT. Only H-bonds, ionic, hydrophobic, and Van der Waals interactions are disrupted." },
+
+{ cat:"denaturation", lec:"l6",
+  q:"What are the 4 consequences of protein denaturation?",
+  a:"1. Loss of biological function (enzyme becomes inactive). 2. Loss of solubility. 3. Exposure of hydrophobic residues (normally buried in core). 4. Possible aggregation or precipitation.",
+  note:"All consequences stem from loss of the 3D structure — the active site changes shape → substrate cannot bind → enzyme inactive." },
+
+{ cat:"denaturation", lec:"l6",
+  q:"Which bonds does heat break during denaturation?",
+  a:"Heat increases molecular motion → breaks: hydrogen bonds, hydrophobic interactions, ionic bonds, and Van der Waals interactions. Classic examples: egg cooking, fever, hot sterilization (autoclave).",
+  note:"Heat is the most common physical denaturant. Above optimum temp → IRREVERSIBLE denaturation (e.g., cooked egg white cannot re-liquefy)." },
+
+{ cat:"denaturation", lec:"l6",
+  q:"How do pH changes denature proteins?",
+  a:"pH changes alter the IONIZATION STATE of amino acid side chains (e.g., –COOH / –NH₂) → disrupt ELECTROSTATIC (ionic) interactions → loss of 3D structure. Example: gastric HCl denatures dietary proteins.",
+  note:"TRAP: pH targets ionic/electrostatic bonds — NOT disulfide bonds. Only reducing agents break disulfide bonds." },
+
+{ cat:"denaturation", lec:"l6",
+  q:"What is the only type of agent that breaks DISULFIDE BONDS?",
+  a:"REDUCING AGENTS: β-mercaptoethanol (β-ME) and DTT (dithiothreitol). They reduce S–S (covalent disulfide bonds) to free –SH groups. All other agents target non-covalent interactions only.",
+  note:"Disulfide bonds are COVALENT — the only covalent bonds broken during chemical denaturation. This is why β-ME/DTT are used in combination with SDS-PAGE to fully unfold proteins." },
+
+{ cat:"denaturation", lec:"l6",
+  q:"How does SDS (sodium dodecyl sulfate) denature proteins?",
+  a:"SDS is a DETERGENT that: 1. Disrupts HYDROPHOBIC interactions. 2. Coats protein with uniform NEGATIVE CHARGES → electrostatic repulsion unfolds and linearizes the protein. Used in SDS-PAGE electrophoresis.",
+  note:"SDS does NOT break disulfide bonds — that requires β-ME/DTT. SDS separates proteins by size in SDS-PAGE by making all proteins negatively charged and rod-shaped." },
+
+{ cat:"denaturation", lec:"l6",
+  q:"What are chaotropic agents and how do they denature proteins?",
+  a:"Urea and guanidine hydrochloride are CHAOTROPIC AGENTS that disrupt HYDROGEN BONDS throughout the protein structure → global unfolding. Used in laboratory protein denaturation experiments.",
+  note:"Urea at 8M concentration can completely denature most proteins. Combined with β-ME (to break disulfide bonds), it gives full chemical denaturation." },
+
+{ cat:"denaturation", lec:"l6",
+  q:"How do heavy metals denature proteins?",
+  a:"Heavy metals (Lead, Mercury, Silver) bind to –SH (thiol/sulfhydryl) groups of cysteine residues → prevent disulfide bond formation → distort protein structure → denaturation. This is the basis for their TOXIC effects.",
+  note:"This is why heavy metal poisoning is so dangerous — critical enzymes (with –SH groups) are inactivated. Mercury poisoning disrupts neurological enzymes." },
+
+{ cat:"denaturation", lec:"l6",
+  q:"Compare REVERSIBLE vs. IRREVERSIBLE denaturation.",
+  a:"REVERSIBLE: Remove the denaturant → protein REFOLDS to native structure (renaturation). Classic: RNase A refolding (Anfinsen experiment). IRREVERSIBLE: Aggregation or precipitation → protein CANNOT refold. Classic: Cooked egg white.",
+  note:"Whether denaturation is reversible depends on: (1) Protein complexity, (2) Environmental conditions, (3) Presence of CHAPERONES." },
+
+{ cat:"denaturation", lec:"l6",
+  q:"What role do CHAPERONES play in protein denaturation/renaturation?",
+  a:"Chaperones are proteins that ASSIST correct protein refolding by: preventing misfolding, preventing aggregation, and helping refold stress-denatured proteins. They do NOT determine the final structure — the amino acid sequence does.",
+  note:"Chaperones are the deciding factor between reversible and irreversible denaturation in vivo. Without chaperones, even mild denaturation can lead to aggregation in the crowded cellular environment." },
+
+// ── AGENTS OF DENATURATION (10) ────────────────────────────────────
+{ cat:"agents", lec:"l6",
+  q:"List the 5 physical agents of denaturation.",
+  a:"I. Heat (most common) | II. Cold (rare — cold denaturation via hydrophobic changes) | III. Mechanical agitation (shaking/stirring) | IV. High pressure (food preservation) | V. Radiation (UV/X-ray — bond breaking → unfolding)",
+  note:"Heat is clinically most relevant: fever, hot sterilization. Mechanical agitation: foam in egg whites. UV radiation: basis for UV sterilization." },
+
+{ cat:"agents", lec:"l6",
+  q:"How does ethanol (organic solvent) denature proteins?",
+  a:"Ethanol disrupts HYDROPHOBIC INTERACTIONS in the protein core → protein unfolds. This is why 70% ethanol is used as a DISINFECTANT — it denatures bacterial membrane and cytoplasmic proteins effectively.",
+  note:"TRAP: 70% ethanol is MORE effective than 100% ethanol as a disinfectant because water helps ethanol penetrate bacterial membranes." },
+
+{ cat:"agents", lec:"l6",
+  q:"Which bond does each chemical agent primarily target?",
+  a:"pH changes → Ionic/electrostatic bonds | Organic solvents (ethanol) → Hydrophobic interactions | Detergents (SDS) → Hydrophobic interactions | Chaotropes (urea) → Hydrogen bonds | Reducing agents (β-ME) → Disulfide bonds (S–S, covalent) | Heavy metals → –SH groups",
+  note:"Master this table — it is a classic exam question. DISULFIDE BONDS are the only COVALENT bonds broken — only by reducing agents." },
+
+{ cat:"agents", lec:"l6",
+  q:"What is cold denaturation and when does it occur?",
+  a:"Cold denaturation occurs at very LOW TEMPERATURES in some proteins due to changes in HYDROPHOBIC INTERACTIONS (which weaken at low temperatures — water becomes better at accommodating hydrophobic groups). It is RARE.",
+  note:"Most proteins denature at high temperatures. Cold denaturation is an exception seen in some multi-domain proteins. The mechanism is weakening of the hydrophobic effect at low temperatures." },
+
+{ cat:"agents", lec:"l6",
+  q:"What is the dental relevance of denaturation agents?",
+  a:"1. Bacterial acid (↓ pH) in dental plaque denatures salivary proteins and enzymes. 2. Ethanol in mouthwash acts as antiseptic by denaturing bacterial proteins. 3. Autoclave sterilization (heat) denatures all proteins in dental instruments. 4. Heavy metal toxicity can inactivate oral enzymes.",
+  note:"Clinical connection: mouth rinses with alcohol (15–26%) denature bacterial proteins. High-temperature autoclave sterilizes instruments by protein denaturation." },
+
+{ cat:"agents", lec:"l6",
+  q:"Why is guanidine hydrochloride a more powerful denaturant than urea?",
+  a:"Both are chaotropic agents that disrupt hydrogen bonds, but GUANIDINE HCl is a STRONGER chaotrope because it is fully charged (positively) in addition to disrupting H-bonds → greater disruption of protein structure. Used at 6M vs 8M urea for complete denaturation.",
+  note:"In lab practice: 6M guanidine HCl ≈ 8M urea in denaturing power. Both are used with reducing agents (β-ME/DTT) when complete denaturation (including disulfide bond breaking) is needed." },
+
+{ cat:"agents", lec:"l6",
+  q:"How does high pressure denature proteins?",
+  a:"HIGH PRESSURE destabilizes the protein's 3D structure by compressing the protein — disrupting hydrophobic interactions and causing volume changes in the protein core. Used in FOOD PRESERVATION and STERILIZATION as an alternative to heat.",
+  note:"High-pressure processing (HPP) of food: kills bacteria by denaturing their proteins without using heat, preserving food flavor and nutrients. Applied pressures: 100–1000 MPa." },
+
+{ cat:"agents", lec:"l6",
+  q:"How does UV/X-ray radiation denature proteins?",
+  a:"UV and X-ray RADIATION break chemical bonds in the protein → unfolding. UV specifically: can break disulfide bonds and oxidize aromatic amino acids (Trp, Phe, Tyr). X-rays: more energetic → more extensive bond breaking.",
+  note:"Used in: UV sterilization of lab surfaces, radiation therapy (cancer treatment disrupts tumor cell proteins), and food irradiation for preservation." },
+
+{ cat:"agents", lec:"l6",
+  q:"What is mechanical agitation denaturation?",
+  a:"SHAKING or STIRRING creates physical forces that disrupt the protein's 3D structure. Classic example: formation of FOAM/MERINGUE from egg whites — mechanical whipping unfolds albumin proteins which then trap air bubbles.",
+  note:"This is why lab protocols say 'do not vortex' certain proteins — vigorous mixing can denature them. Gentle rocking or slow stirring is preferred for sensitive proteins." },
+
+{ cat:"agents", lec:"l6",
+  q:"Compare all denaturation agents by bond targeted — summary table.",
+  a:"Bond | Agent | Covalent?\nH-bonds | Heat, urea, pH | No\nIonic bonds | pH changes | No\nHydrophobic | SDS, solvents | No\nVan der Waals | Temperature | No\nDisulfide (S–S) | β-ME, DTT only | YES (covalent)\n–SH groups | Heavy metals | No",
+  note:"CRITICAL EXAM POINT: Disulfide bonds are the ONLY covalent interactions broken during denaturation — and ONLY by reducing agents (β-ME or DTT). Everything else is non-covalent." },
+
+// ── PROTEIN CLASSIFICATION (10) ────────────────────────────────────
+{ cat:"classif6", lec:"l6",
+  q:"What are simple proteins and give 3 examples.",
+  a:"Simple proteins yield ONLY AMINO ACIDS on hydrolysis. They have NO prosthetic group. Examples: 1. Albumins (serum albumin) — soluble, transport protein. 2. Globulins (immunoglobulins) — antibodies. 3. Histones — bind DNA. 4. Keratin — structural (hair, nails).",
+  note:"TRAP: Even though keratin is a simple protein, it is fibrous. Even though albumin is a simple protein, it is globular. Simple/conjugated is about composition; fibrous/globular is about shape." },
+
+{ cat:"classif6", lec:"l6",
+  q:"What are conjugated proteins? Name 5 types by prosthetic group.",
+  a:"Conjugated proteins = APOPROTEIN + NON-PROTEIN PROSTHETIC GROUP.\n1. Nucleoproteins → nucleic acids (chromatin, ribosomes).\n2. Glycoproteins → carbohydrate (hormones, blood groups).\n3. Lipoproteins → lipid (LDL, HDL).\n4. Metalloproteins → metal ion (hemoglobin Fe²⁺).\n5. Phosphoproteins → phosphate (casein).",
+  note:"The prosthetic group is ESSENTIAL for function. Apoprotein alone is often inactive. Examples: hemoglobin without heme cannot carry O₂; casein without phosphate changes its calcium-binding properties." },
+
+{ cat:"classif6", lec:"l6",
+  q:"LDL and HDL are examples of which conjugated protein type?",
+  a:"LDL (Low-Density Lipoprotein) and HDL (High-Density Lipoprotein) are LIPOPROTEINS — conjugated proteins where LIPID is the prosthetic group. LDL carries cholesterol to tissues; HDL removes it from tissues (reverse cholesterol transport).",
+  note:"CLINICAL: High LDL = atherosclerosis risk. High HDL = protective. The density difference: HDL has more protein (denser); LDL has more lipid (less dense)." },
+
+{ cat:"classif6", lec:"l6",
+  q:"Compare fibrous vs. globular proteins.",
+  a:"FIBROUS: Long, rod-like shape | INSOLUBLE in water | STRUCTURAL role | Examples: Collagen, Elastin, Keratin, Fibrin.\nGLOBULAR: Spherical, compact shape | Usually SOLUBLE | FUNCTIONAL role (enzymatic, transport, hormonal) | Examples: Hemoglobin, Myoglobin, Hexokinase, Insulin.",
+  note:"TRAP: Keratin is fibrous but SIMPLE (no prosthetic group). Hemoglobin is globular but CONJUGATED (heme = prosthetic group). Shape and composition classifications are independent." },
+
+{ cat:"classif6", lec:"l6",
+  q:"What is hemoglobin's dual classification?",
+  a:"Hemoglobin is: 1. GLOBULAR (spherical, compact, soluble) AND 2. CONJUGATED — specifically a CHROMOPROTEIN (prosthetic group = HEME, which contains Fe²⁺). It carries oxygen in blood.",
+  note:"Hemoglobin has 4 subunits (quaternary structure), each with one heme group. Total 4 heme groups per Hb molecule → can carry 4 O₂ molecules." },
+
+{ cat:"classif6", lec:"l6",
+  q:"Name the 8 functional classes of proteins with examples.",
+  a:"A. Enzymatic: Amylase, DNA polymerase | B. Structural: Collagen, Keratin | C. Transport: Hemoglobin (O₂), Albumin | D. Storage: Ferritin (Fe), Casein (milk) | E. Regulatory: Insulin, Glucagon | F. Contractile: Actin, Myosin | G. Protective: Antibodies (immunoglobulins) | H. Toxic/Special: Botulinum toxin, Snake venom",
+  note:"TRAP: Actin and Myosin are CONTRACTILE — NOT structural. Ferritin and Casein are STORAGE — NOT transport. Collagen is STRUCTURAL (fibrous) — NOT transport." },
+
+{ cat:"classif6", lec:"l6",
+  q:"What are the 3 nutritional classes of proteins?",
+  a:"1. COMPLETE proteins: contain ALL essential AAs. Examples: eggs, milk, meat, fish (animal proteins). 2. PARTIALLY COMPLETE: deficient in 1–2 essential AAs. Examples: cereals (wheat, rice — low in lysine). 3. INCOMPLETE: lack SEVERAL essential AAs. Examples: Gelatin, Zein (corn protein).",
+  note:"TRAP: Gelatin (from collagen) is INCOMPLETE — it lacks tryptophan and has very low amounts of other essential AAs. It is the classic example of an incomplete protein." },
+
+{ cat:"classif6", lec:"l6",
+  q:"Why is gelatin an incomplete protein?",
+  a:"Gelatin is derived from COLLAGEN (connective tissue). It lacks the essential amino acid TRYPTOPHAN and is deficient in several others. It CANNOT support growth or body maintenance alone when used as the sole protein source.",
+  note:"Collagen/gelatin composition: mainly glycine (33%), proline, hydroxyproline. It lacks many essential AAs because these AAs are not needed in large amounts for structural fibrous protein." },
+
+{ cat:"classif6", lec:"l6",
+  q:"What type of protein is collagen and why is it important in dentistry?",
+  a:"Collagen is: FIBROUS + SIMPLE + STRUCTURAL protein. Dental relevance: 1. Main organic component of DENTIN (90% of organic matrix). 2. Present in PERIODONTAL LIGAMENT. 3. Present in ALVEOLAR BONE matrix. 4. Scaffold for mineralization during tooth development.",
+  note:"Vitamin C deficiency impairs collagen synthesis → SCURVY → bleeding gums, loose teeth. Collagen crosslinking requires Vitamin C (for hydroxylation of proline and lysine)." },
+
+{ cat:"classif6", lec:"l6",
+  q:"What is the functional classification of insulin and glucagon?",
+  a:"Insulin and glucagon are REGULATORY/SIGNALLING PROTEINS (specifically hormones). Insulin: produced by β-cells of pancreas → lowers blood glucose. Glucagon: produced by α-cells → raises blood glucose. Both are also GLOBULAR proteins.",
+  note:"Insulin is also a CONJUGATED protein? NO — it is a SIMPLE protein (only amino acids, no prosthetic group). It is globular and regulatory. Do not confuse functional class with composition class." },
+
+// ═══════════════════ LECTURE 7 — PROTEIN BIOCHEMISTRY PART 4 ═══════════════════
+
+{ cat:"metabolism", lec:"l7",
+  q:"What four processes does protein metabolism include?",
+  a:"1) Digestion of dietary proteins → amino acids\n2) Absorption & transport of amino acids in body fluids\n3) Utilization of AAs for protein synthesis & nitrogen-containing compounds\n4) Catabolism of excess AAs → deamination → urea excretion",
+  note:"Protein metabolism is a CONTINUOUS process — synthesis and degradation occur simultaneously (protein turnover). Unlike carbs and fats, proteins are NOT stored." },
+
+{ cat:"metabolism", lec:"l7",
+  q:"Why are proteins NOT stored in the body?",
+  a:"There is NO dedicated protein storage form in the body. Unlike glycogen (carbohydrates) or adipose tissue (fats), the body does not store excess protein. Instead, excess amino acids are METABOLIZED via deamination and excreted as urea.",
+  note:"This is a fundamental difference from CHO and lipid metabolism. Proteins exist in a state of continuous turnover — old proteins are degraded and replaced, not accumulated." },
+
+{ cat:"metabolism", lec:"l7",
+  q:"What is protein turnover?",
+  a:"Protein turnover is the continuous cycle of protein SYNTHESIS (anabolism) ↔ protein DEGRADATION (catabolism). It maintains protein quality, removes damaged proteins, and allows rapid adaptation to changing metabolic needs.",
+  note:"Rate of turnover varies by protein — liver proteins: every few hours. Structural proteins (collagen): months to years. Hemoglobin: ~120 days (RBC lifespan)." },
+
+{ cat:"metabolism", lec:"l7",
+  q:"What is the main nitrogen-containing molecule produced during amino acid catabolism, and how is it disposed of?",
+  a:"Excess nitrogen → first released as AMMONIA (NH₃, highly toxic) → liver converts NH₃ to UREA (less toxic) via the urea cycle → urea excreted by KIDNEYS in urine.",
+  note:"Ammonia toxicity can cause hepatic encephalopathy (confusion, coma) when liver cannot convert it. Nitrogen disposal = NH₃ → Urea → Kidneys." },
+
+{ cat:"metabolism", lec:"l7",
+  q:"Why is nitrogen important in the body?",
+  a:"Nitrogen (N) is ESSENTIAL for: amino acids (building proteins), nucleotides (DNA & RNA), neurotransmitters (serotonin, dopamine), and hormones (adrenaline, thyroid hormone). Proteins are the MAIN source of nitrogen in the body.",
+  note:"Proteins contain ~16% nitrogen by weight — this is why nitrogen balance is used as a proxy for protein balance in clinical nutrition." },
+
+{ cat:"metabolism", lec:"l7",
+  q:"Compare protein metabolism with carbohydrate and lipid metabolism in terms of storage and nitrogen.",
+  a:"CHO: stored as glycogen | excess → fat. Lipids: stored as triglycerides in adipose. Proteins: NO storage form | excess → deamination. KEY differences: only proteins contain nitrogen | only proteins have no storage form | only proteins produce urea as end product.",
+  note:"Storage comparison: CHO (glycogen, liver+muscle) → Lipids (adipose) → Proteins (NONE). Nitrogen end product is unique to protein catabolism." },
+
+{ cat:"nitrobal", lec:"l7",
+  q:"Define Nitrogen Balance and list the three types.",
+  a:"Nitrogen Balance = Nitrogen INTAKE (dietary protein) minus Nitrogen EXCRETION (mainly urea).\n• Positive: intake > loss (growth, pregnancy, recovery)\n• Negative: loss > intake (starvation, trauma, illness)\n• Equilibrium (Zero): intake = loss (healthy adult)",
+  note:"1 g protein ≈ 0.16 g nitrogen. Nitrogen balance is measured clinically by comparing dietary protein intake with urinary urea nitrogen output." },
+
+{ cat:"nitrobal", lec:"l7",
+  q:"In which physiological states does POSITIVE nitrogen balance occur?",
+  a:"Positive nitrogen balance (intake > loss) occurs during: GROWTH (children, adolescents), PREGNANCY (building fetal tissue), LACTATION, RECOVERY from illness/surgery/burns. The body is in an ANABOLIC (building) state.",
+  note:"In these states, more protein is synthesized than degraded. Dietary protein intake must be increased to support the higher anabolic demand." },
+
+{ cat:"nitrobal", lec:"l7",
+  q:"In which states does NEGATIVE nitrogen balance occur, and what does it mean clinically?",
+  a:"Negative nitrogen balance (loss > intake): STARVATION, SEVERE ILLNESS, TRAUMA, BURNS, PROLONGED BED REST. The body breaks down its own muscle proteins for energy → muscle wasting. This is a CATABOLIC state.",
+  note:"Clinical sign: muscle atrophy, weight loss, impaired wound healing, weak immune system. Corrected by adequate protein intake and treating the underlying condition." },
+
+{ cat:"nitrobal", lec:"l7",
+  q:"What is the Amino Acid Pool?",
+  a:"The amino acid pool = the total FREE amino acids present in body fluids and cells at any given moment. It is DYNAMIC — constantly replenished (by dietary digestion + protein breakdown) and constantly consumed (for protein synthesis + energy).",
+  note:"The amino acid pool is NOT a storage form. Think of it as a 'buffer reservoir' that feeds both anabolic (synthesis) and catabolic (deamination) pathways simultaneously." },
+
+{ cat:"dietary", lec:"l7",
+  q:"What is the recommended daily protein requirement for a healthy adult?",
+  a:"Healthy adults: 0.8–1.0 g of protein per kg body weight per day. Example: a 70 kg person needs about 56–70 g protein/day.",
+  note:"This is the minimum to maintain nitrogen equilibrium. Athletes, bodybuilders, or those in catabolic states may require 1.2–2.0 g/kg/day." },
+
+{ cat:"dietary", lec:"l7",
+  q:"Which groups have HIGHER protein requirements than the average adult?",
+  a:"Higher requirements: Infants & children (rapid growth), Pregnant women (fetal development), Lactating women (milk production), Adolescents (growth spurt), People with illness/trauma/burns/surgery (tissue repair).",
+  note:"Remember: any anabolic or catabolic demand INCREASES protein requirements. Infants have the highest requirement per kg body weight (~1.5–2.0 g/kg/day)." },
+
+{ cat:"digestion", lec:"l7",
+  q:"Why must dietary proteins be digested before absorption?",
+  a:"Proteins are LARGE, COMPLEX macromolecules that CANNOT be absorbed in their intact form across the intestinal epithelium. They must be broken down into amino acids, dipeptides (2 AAs), and tripeptides (3 AAs) — small enough to cross enterocyte membranes.",
+  note:"Intact proteins in the bloodstream would trigger immune responses (allergic reactions). Complete digestion prevents foreign proteins from entering circulation." },
+
+{ cat:"digestion", lec:"l7",
+  q:"Does protein digestion begin in the mouth?",
+  a:"NO. There are NO protein-digesting enzymes in the mouth (only salivary amylase for starch, and lingual lipase for fats). Protein digestion begins in the STOMACH.",
+  note:"EXAM TRAP: This is frequently reversed. Mouth: carbohydrate digestion (amylase). Stomach: protein digestion begins. Small intestine: fat + further protein digestion." },
+
+{ cat:"digestion", lec:"l7",
+  q:"What triggers gastric juice secretion and what does gastric juice contain?",
+  a:"Proteins entering the stomach stimulate G cells (gastric mucosal cells) to release GASTRIN hormone. Gastrin stimulates secretion of gastric juice containing: HCl + Pepsinogen + Rennin (infants only).",
+  note:"The hormone-enzyme sequence: Protein → Gastrin → Gastric juice → HCl + Pepsinogen. HCl then converts pepsinogen to pepsin, which begins protein digestion." },
+
+{ cat:"digestion", lec:"l7",
+  q:"What is the pH of gastric juice and why is it important?",
+  a:"Gastric juice pH = 1.5–2.5 (highly ACIDIC). This is optimal for: (1) DENATURING dietary proteins (unfolding their 3D structure), (2) ACTIVATING pepsinogen → pepsin, and (3) Creating the optimal environment for pepsin activity.",
+  note:"When this acidic chyme reaches the duodenum, Secretin is released to trigger bicarbonate secretion, neutralizing the acid to ~pH 7 for pancreatic enzyme activity." },
+
+{ cat:"digestion", lec:"l7",
+  q:"What are the three roles of HCl in protein digestion?",
+  a:"1) DENATURES proteins — unfolds 3D structure, exposing peptide bonds to enzyme attack\n2) ACTIVATES pepsinogen → pepsin (by autocatalysis at low pH)\n3) PROVIDES acidic pH (1.5–2.5) optimal for pepsin function",
+  note:"HCl does NOT cleave peptide bonds itself — it is NOT a protease. Pepsin is the actual enzyme. This distinction is frequently tested: HCl = denatures + activates; Pepsin = digests." },
+
+{ cat:"digestion", lec:"l7",
+  q:"What are the end products of gastric (stomach) protein digestion?",
+  a:"Pepsin breaks proteins into: Large polypeptides → Proteoses (intermediate fragments) → Peptones (smaller, soluble fragments). These are NOT free amino acids — further digestion occurs in the small intestine.",
+  note:"Sequence in stomach: Intact protein → Large polypeptides → Proteoses → Peptones. Final free amino acids come from intestinal digestion, not stomach." },
+
+{ cat:"digestion", lec:"l7",
+  q:"What is Rennin (Chymosin) and where is it found?",
+  a:"Rennin is a gastric protease found in INFANTS that coagulates MILK PROTEINS (specifically casein). By clotting milk, it slows gastric emptying and allows more complete digestion of milk protein.",
+  note:"Rennin is not significant in adults — pepsin handles milk proteins instead. Rennin (chymosin) is commercially important in CHEESE MAKING, where it is used to coagulate milk." },
+
+{ cat:"digestion", lec:"l7",
+  q:"What two intestinal hormones are released when acidic chyme enters the duodenum?",
+  a:"1) SECRETIN — released in response to LOW pH of chyme. Stimulates pancreas to secrete BICARBONATE → neutralizes HCl → raises pH from ~2 to ~7.\n2) CCK (Cholecystokinin) — released in response to proteins + fats. Stimulates secretion of PANCREATIC PROTEASES.",
+  note:"Memory trick: Secretin → bicarb (neutralize). CCK → enzymes (digest). Both come from duodenal mucosal cells in response to chyme entering the duodenum." },
+
+{ cat:"enzymes", lec:"l7",
+  q:"Distinguish between Endopeptidases and Exopeptidases.",
+  a:"ENDOPEPTIDASES: cleave INTERNAL peptide bonds within a polypeptide chain → produce smaller fragments. Examples: Pepsin, Trypsin, Chymotrypsin, Elastase.\nEXOPEPTIDASES: remove amino acids from the TERMINAL ends. Aminopeptidase (N-terminus) | Carboxypeptidase (C-terminus).",
+  note:"Endo = within (internal bonds). Exo = outside (terminal). Working together: endopeptidases fragment the chain, then exopeptidases strip off individual amino acids from the ends." },
+
+{ cat:"enzymes", lec:"l7",
+  q:"What are Zymogens (Proenzymes) and why are proteases secreted in this form?",
+  a:"Zymogens are INACTIVE precursor forms of enzymes. Proteases are secreted as zymogens to prevent AUTODIGESTION of the cells that produce them. They become active only when they reach their target site.",
+  note:"If proteases were active inside the pancreas, they would digest the pancreatic tissue itself → ACUTE PANCREATITIS. Zymogens are the body's safety mechanism." },
+
+{ cat:"enzymes", lec:"l7",
+  q:"Name the four pancreatic zymogens and their corresponding active enzymes.",
+  a:"Trypsinogen → Trypsin\nChymotrypsinogen → Chymotrypsin\nProcarboxypeptidase → Carboxypeptidase\nProelastase → Elastase\n(Also: stomach Pepsinogen → Pepsin, activated by HCl)",
+  note:"All pancreatic zymogens are activated ULTIMATELY by trypsin. Remember: 'Gen' or 'Pro' prefix = inactive. The active forms drop the prefix." },
+
+{ cat:"enzymes", lec:"l7",
+  q:"What are the functions of Trypsin, Chymotrypsin, and Elastase?",
+  a:"All three are ENDOPEPTIDASES that cleave internal peptide bonds:\n• Trypsin: cleaves after basic AAs (Lys, Arg) | also the MASTER ACTIVATOR enzyme\n• Chymotrypsin: cleaves after aromatic AAs (Phe, Trp, Tyr)\n• Elastase: breaks bonds in elastic proteins",
+  note:"Together they reduce proteins to small peptide fragments. Their combined action ensures complete breakdown of diverse protein types." },
+
+{ cat:"enzymes", lec:"l7",
+  q:"What type of enzyme is Carboxypeptidase, and where does it cleave?",
+  a:"Carboxypeptidase is an EXOPEPTIDASE. It removes amino acids ONE AT A TIME from the CARBOXYL (C-terminal) END of a peptide chain. Produced from Procarboxypeptidase by trypsin activation.",
+  note:"Aminopeptidase (located on intestinal brush border) removes AAs from the N-terminal (amino) end. Together, exopeptidases strip terminal AAs, completing digestion alongside endopeptidases." },
+
+{ cat:"cascade", lec:"l7",
+  q:"What enzyme initiates the activation cascade of pancreatic enzymes?",
+  a:"ENTEROPEPTIDASE (also called Enterokinase) — located on the BRUSH BORDER of the small intestine. It cleaves and activates Trypsinogen → Trypsin. This is the KEY REGULATORY STEP of the entire cascade.",
+  note:"Enteropeptidase is NOT from the pancreas — it is produced by duodenal epithelial cells. Without enteropeptidase, the entire pancreatic enzyme cascade would fail (as seen in rare enteropeptidase deficiency)." },
+
+{ cat:"cascade", lec:"l7",
+  q:"Describe the complete Activation Cascade of pancreatic enzymes step by step.",
+  a:"Step 1: Pancreas secretes zymogens into duodenum (trypsinogen, chymotrypsinogen, procarboxypeptidase, proelastase)\nStep 2: Enteropeptidase on brush border activates Trypsinogen → Trypsin\nStep 3: Trypsin activates ALL other zymogens + more trypsinogen (autocatalytic)\nStep 4: Active enzymes digest proteins → dipeptides + AAs",
+  note:"The cascade is amplified — ONE molecule of enteropeptidase → many trypsin molecules → each trypsin activates many zymogens. This creates a powerful digestive response." },
+
+{ cat:"cascade", lec:"l7",
+  q:"Why is Trypsin called the 'Master Activator Enzyme'?",
+  a:"Once activated, Trypsin activates ALL other pancreatic zymogens:\n• Chymotrypsinogen → Chymotrypsin\n• Procarboxypeptidase → Carboxypeptidase\n• Proelastase → Elastase\n• More Trypsinogen → more Trypsin (POSITIVE FEEDBACK)\nNo other enzyme has this central activating role.",
+  note:"Trypsin is activated FIRST by enteropeptidase, then acts as the central hub. Loss of trypsin function = loss of all pancreatic digestion. That's why enteropeptidase is the master switch." },
+
+{ cat:"cascade", lec:"l7",
+  q:"Why do pancreatic zymogens remain INACTIVE while inside the pancreas?",
+  a:"Inside the pancreas: no enteropeptidase is present (it's on intestinal brush border), trypsin inhibitor proteins are present to neutralize any accidental activation, and the environment does not favor autocatalysis. They are only activated after entering the duodenum.",
+  note:"If zymogens activate prematurely INSIDE the pancreas → trypsin digests pancreatic tissue → ACUTE PANCREATITIS. Clinical presentation: severe abdominal pain, elevated serum amylase and lipase." },
+
+{ cat:"cascade", lec:"l7",
+  q:"What are the end products of intestinal protein digestion ready for absorption?",
+  a:"After pancreatic + brush border enzymes: proteins are reduced to FREE AMINO ACIDS, DIPEPTIDES (2 AAs), and TRIPEPTIDES (3 AAs). These are small enough to be transported across the enterocyte membrane.",
+  note:"Larger peptides are NOT directly absorbed — they require further hydrolysis. The intestinal brush border enzymes (aminopeptidase, dipeptidase) complete the final stages of digestion." },
+
+{ cat:"absorption", lec:"l7",
+  q:"Define Amino Acid Absorption.",
+  a:"Amino acid absorption = the process by which amino acids, dipeptides, and tripeptides (produced from protein digestion) are transported from the intestinal LUMEN across the EPITHELIAL CELLS (enterocytes) of the small intestine into the BLOODSTREAM.",
+  note:"The absorbed amino acids are used for protein synthesis, energy metabolism, and other biosynthetic functions throughout the body." },
+
+{ cat:"absorption", lec:"l7",
+  q:"What are the primary and secondary sites of amino acid absorption?",
+  a:"PRIMARY site: JEJUNUM — absorbs the MAJORITY of amino acids, dipeptides, and tripeptides. Has abundant transport proteins and a large surface area.\nSECONDARY site: ILEUM — absorbs remaining amino acids. Acts as a backup absorption site.",
+  note:"EXAM TRAP: Jejunum = PRIMARY (not duodenum, not ileum). Duodenum is mainly a site of digestion by pancreatic enzymes, not the main absorption site." },
+
+{ cat:"absorption", lec:"l7",
+  q:"What is Sodium-Dependent (Secondary Active) Transport of amino acids?",
+  a:"1) Na+/K+ ATPase pump keeps intracellular Na+ LOW (using ATP — primary active transport)\n2) Na+ flows back INTO cell down its gradient via CO-TRANSPORT PROTEIN\n3) As Na+ enters, it carries an amino acid against its concentration gradient\n4) Called SECONDARY active transport — energy from Na+ gradient, not direct ATP",
+  note:"The Na+/K+ pump is primary active transport (uses ATP directly). Amino acid co-transport is secondary (uses the gradient created by the pump, not ATP directly)." },
+
+{ cat:"absorption", lec:"l7",
+  q:"What is the PEPT-1 transporter and what does it transport?",
+  a:"PEPT-1 (SLC15A1) is a transporter on the APICAL membrane of enterocytes that absorbs DIPEPTIDES and TRIPEPTIDES (NOT free amino acids). It uses a PROTON (H+) GRADIENT — H+ moves into cell and drives peptide uptake.",
+  note:"H+-dependent — NOT Na+-dependent. This is the key distinction. Once inside the cell, the di/tripeptides are hydrolyzed to free AAs by intracellular peptidases before entering blood." },
+
+{ cat:"absorption", lec:"l7",
+  q:"Compare Na+-dependent amino acid transport vs. PEPT-1 peptide transport.",
+  a:"Na+-dependent: substrate = FREE AMINO ACIDS | ion = Na+ | less efficient\nPEPT-1: substrate = DIPEPTIDES + TRIPEPTIDES | ion = H+ | MORE EFFICIENT (carries 2-3 AAs per transport event)\nBoth: secondary active transport | both on APICAL membrane | neither uses ATP directly",
+  note:"PEPT-1 is more efficient because it transports 2-3 amino acids in one transport event vs. one AA at a time for free AA transporters." },
+
+{ cat:"absorption", lec:"l7",
+  q:"What is the fate of dipeptides/tripeptides after absorption via PEPT-1?",
+  a:"Once inside the enterocyte, absorbed DIPEPTIDES and TRIPEPTIDES are hydrolyzed into FREE AMINO ACIDS by INTRACELLULAR PEPTIDASES. Only FREE amino acids exit the enterocyte through the BASOLATERAL membrane into blood capillaries.",
+  note:"No significant peptides appear in the portal blood — essentially all digested protein enters the bloodstream as individual free amino acids." },
+
+{ cat:"absorption", lec:"l7",
+  q:"Trace the route of absorbed amino acids from the intestinal lumen to the liver.",
+  a:"Lumen → Apical membrane of enterocyte (via Na+-cotransporters or PEPT-1) → Inside enterocyte (peptides hydrolyzed to free AAs) → Basolateral membrane → Blood capillaries → PORTAL VEIN → LIVER (first stop for distribution and metabolism)",
+  note:"The LIVER receives all portal blood from the intestine. It acts as the gatekeeper: distributing AAs to other tissues, using them for protein synthesis, or metabolizing them (gluconeogenesis, urea cycle)." },
+
+{ cat:"absorption", lec:"l7",
+  q:"What are the two membranes of the enterocyte involved in amino acid transport?",
+  a:"APICAL (luminal) membrane: faces the intestinal lumen — site of UPTAKE (Na+-cotransporters for free AAs; PEPT-1 for peptides).\nBASALATERAL membrane: faces blood capillaries — site of EXIT (amino acids leave enterocyte into portal circulation).",
+  note:"Think: Apical = In (from gut lumen). Basolateral = Out (into blood). This polarized transport allows directed, one-way flow of nutrients from gut → blood." },
+
+{ cat:"enzymes", lec:"l7",
+  q:"Where is pepsin produced and how is it activated?",
+  a:"Pepsin is produced by CHIEF CELLS of the stomach mucosa as the ZYMOGEN PEPSINOGEN. It is activated by HCl at low pH (1.5–2.5): HCl denatures pepsinogen → pepsin + autocatalysis (pepsin activates more pepsinogen).",
+  note:"This is called AUTOCATALYTIC activation or AUTOACTIVATION. Unlike pancreatic enzymes (activated by enteropeptidase), pepsin is activated by HCl + its own catalytic activity." },
+
+{ cat:"cascade", lec:"l7",
+  q:"What clinical condition results from premature activation of pancreatic zymogens inside the pancreas?",
+  a:"ACUTE PANCREATITIS — premature intra-pancreatic activation of trypsin causes autodigestion of the pancreatic tissue. Symptoms: SEVERE abdominal pain, nausea, vomiting, elevated serum amylase and lipase.",
+  note:"Causes of pancreatitis: gallstones (block pancreatic duct), alcohol, trauma. Understanding zymogens explains WHY zymogens exist — as a protective mechanism against this condition." },
+
+{ cat:"digestion", lec:"l7",
+  q:"What is the role of Secretin in protein digestion (indirect role)?",
+  a:"Secretin is released by duodenal S-cells when acidic chyme (pH ~1.5-2.5) enters the duodenum. It stimulates the pancreas to secrete BICARBONATE (HCO3-), which NEUTRALIZES the acid, raising intestinal pH from ~2 → ~7. This creates optimal pH for pancreatic enzyme activity.",
+  note:"Without secretin/bicarbonate, the acid from the stomach would inactivate pancreatic enzymes (optimal pH 7–8 for most pancreatic proteases). Secretin indirectly enables all intestinal digestion." },
+
+{ cat:"digestion", lec:"l7",
+  q:"What is the role of CCK (Cholecystokinin) in protein digestion?",
+  a:"CCK is released by duodenal I-cells in response to PROTEINS and FATS in the duodenum. It stimulates: (1) Pancreas to SECRETE DIGESTIVE ENZYMES (trypsinogen, chymotrypsinogen, etc.) (2) Gallbladder to RELEASE BILE (for fat digestion).",
+  note:"CCK targets TWO organs: Pancreas (enzymes) and Gallbladder (bile). For protein digestion, CCK's role in releasing pancreatic zymogens is the key action." },
+
+{ cat:"metabolism", lec:"l7",
+  q:"What happens to excess amino acids in the body?",
+  a:"Excess amino acids CANNOT be stored. They undergo DEAMINATION — the amino group (-NH2) is removed as AMMONIA (NH3). The remaining carbon skeleton (keto acid) is used for: energy (TCA cycle), gluconeogenesis, or fat synthesis. NH3 → Urea → excreted in urine.",
+  note:"Deamination is mainly in the LIVER. The carbon skeleton fate depends on the amino acid: some → pyruvate (glucogenic), some → acetyl-CoA (ketogenic), some → TCA intermediates." },
+
+{ cat:"nitrobal", lec:"l7",
+  q:"How is nitrogen balance measured clinically?",
+  a:"Nitrogen Balance = Nitrogen IN (dietary protein ÷ 6.25) − Nitrogen OUT (mainly urinary urea nitrogen + small losses in feces, sweat, hair). Note: 1 g protein ≈ 0.16 g nitrogen (or 6.25 g protein per 1 g nitrogen).",
+  note:"Clinical use: assess nutritional status, monitor recovery from surgery/illness, adjust nutritional support. A patient on TPN (IV nutrition) needs regular nitrogen balance assessment." },
+
+{ cat:"dietary", lec:"l7",
+  q:"What is the difference between essential and non-essential amino acids in the context of dietary requirements?",
+  a:"ESSENTIAL AAs (9): Cannot be synthesized by the body → MUST come from diet. Mnemonic: PVT TIM HaLL (Phe, Val, Thr, Trp, Ile, Met, His, Leu, Lys).\nNON-ESSENTIAL AAs (11): Can be synthesized by the body from other precursors.",
+  note:"Complete proteins (meat, fish, eggs, dairy) contain all 9 essential AAs. Incomplete proteins (most plant sources) lack one or more — vegans must combine plant proteins." },
+
+{ cat:"absorption", lec:"l7",
+  q:"Why is PEPT-1 transport considered MORE EFFICIENT than sodium-dependent free amino acid transport?",
+  a:"PEPT-1 transports DIPEPTIDES and TRIPEPTIDES in a SINGLE transport event, effectively delivering 2–3 amino acids at once. Na+-dependent transporters carry only ONE free amino acid per event. Same energy expenditure, more amino acids delivered per event.",
+  note:"This efficiency explains why partially digested peptides are actually more efficiently absorbed than completely hydrolyzed free AAs. The gut deliberately absorbs some peptides intact." },
+
+{ cat:"enzymes", lec:"l7",
+  q:"Which enzymes are located on the BRUSH BORDER of the small intestine?",
+  a:"Brush border (microvilli) of enterocytes contains: ENTEROPEPTIDASE (activates trypsinogen), AMINOPEPTIDASE (removes N-terminal AAs from peptides), DIPEPTIDASE (cleaves dipeptides → free AAs). These are the final enzymes completing protein digestion.",
+  note:"Brush border enzymes are MEMBRANE-BOUND on enterocytes — they are part of the intestinal wall, not free in the lumen. This is different from pancreatic enzymes, which are secreted into the lumen." },
+
+{ cat:"cascade", lec:"l7",
+  q:"What is the 'positive feedback' mechanism of Trypsin activation?",
+  a:"Once a small amount of trypsin is formed (by enteropeptidase), TRYPSIN ITSELF cleaves MORE TRYPSINOGEN → more TRYPSIN. This is autocatalytic POSITIVE FEEDBACK — a small initial activation triggers an amplified cascade of trypsin production.",
+  note:"This amplification mechanism ensures rapid and complete enzyme activation for efficient digestion. It also explains why even small enteropeptidase activity is sufficient to generate a large amount of trypsin." },
+
+{ cat:"absorption", lec:"l7",
+  q:"After amino acids enter the portal vein, what does the liver do with them?",
+  a:"The liver is the FIRST organ to receive absorbed amino acids. Liver uses them for: (1) Protein synthesis (plasma proteins: albumin, clotting factors), (2) Gluconeogenesis (during fasting), (3) Urea production (deamination of excess AAs), (4) Distribution to other tissues.",
+  note:"The liver acts as the 'traffic controller' for amino acids — keeping what it needs, synthesizing glucose from some, and releasing the rest into systemic circulation for other organs." },
+
+{ cat:"metabolism", lec:"l7",
+  q:"What are 'specialized nitrogen-containing compounds' produced from amino acids?",
+  a:"Amino acids are precursors for many nitrogen-containing molecules beyond proteins: NUCLEOTIDES (purine + pyrimidine bases for DNA/RNA), NEUROTRANSMITTERS (serotonin from Trp, dopamine from Tyr, GABA from Glu), HORMONES (epinephrine, thyroid hormone), CREATINE (muscle energy), HEME (from Gly).",
+  note:"This shows that protein metabolism is not just about building structural proteins — amino acids are essential feedstocks for the entire metabolism. Loss of dietary AAs impacts ALL these pathways." },
+
+{ cat:"digestion", lec:"l7",
+  q:"What sequence of events occurs from eating a protein meal to amino acid absorption?",
+  a:"1) Protein enters STOMACH → Gastrin released → HCl + Pepsinogen → Pepsin → Proteoses/Peptones\n2) Chyme enters DUODENUM → Secretin → HCO3- neutralization | CCK → pancreatic zymogens\n3) Enteropeptidase → Trypsin cascade → active enzymes digest to AAs/di/tripeptides\n4) JEJUNUM absorbs via PEPT-1 (peptides) + Na+-transport (free AAs) → portal vein → liver",
+  note:"This is the complete integration: Mouth (no digestion) → Stomach (begins) → Duodenum (hormones + enzymes) → Jejunum (absorption) → Portal vein → Liver." },
+
+{ cat:"nitrobal", lec:"l7",
+  q:"A patient with severe burns is in which type of nitrogen balance, and what is the clinical implication?",
+  a:"NEGATIVE nitrogen balance — burns cause massive CATABOLISM (protein breakdown for energy, tissue repair demand exceeds synthesis). Clinical implication: patient needs HIGH PROTEIN intake (1.5–3 g/kg/day) to support wound healing and prevent muscle wasting.",
+  note:"Burns are among the most catabolic physiological states known — negative N balance is extreme. Nutritional support (enteral or TPN) with high protein is critical for survival and recovery." },
+
+{ cat:"digestion", lec:"l7",
+  q:"How does protein digestion in the STOMACH differ from protein digestion in the SMALL INTESTINE?",
+  a:"STOMACH: Acidic (pH 1.5–2.5) | Enzyme: Pepsin (endopeptidase) | End products: proteoses + peptones (large fragments) | Only one protease\nSMALL INTESTINE: Neutral (pH ~7) | Multiple enzymes (trypsin, chymotrypsin, elastase, carboxypeptidase) | End products: AAs + dipeptides + tripeptides",
+  note:"The stomach begins digestion but cannot complete it — intestinal enzymes are essential for producing absorbable fragments. Patients without a stomach (gastrectomy) can still digest protein via pancreatic enzymes." },
+
+{ cat:"enzymes", lec:"l7",
+  q:"Why are there multiple different proteases (trypsin, chymotrypsin, elastase) in the small intestine rather than just one?",
+  a:"Different proteases have DIFFERENT SPECIFICITIES — they cleave at different amino acid sequences. Trypsin: after basic AAs (Lys, Arg). Chymotrypsin: after aromatic AAs (Phe, Trp, Tyr). Elastase: aliphatic AAs. Using multiple enzymes ensures COMPLETE digestion of ALL protein types.",
+  note:"A single protease would leave uncut regions resistant to it. Multiple enzymes with complementary specificities ensure no peptide bonds survive. This is the same logic as using multiple restriction enzymes in molecular biology." },
+
+{ cat:"cascade", lec:"l7",
+  q:"What is Enteropeptidase (Enterokinase) and why is it called the 'key regulatory step'?",
+  a:"Enteropeptidase is an enzyme on the BRUSH BORDER of the small intestine that SPECIFICALLY cleaves trypsinogen → trypsin. It is called the KEY REGULATORY STEP because: (1) Without it, the entire pancreatic protease cascade does not start, (2) It is the RATE-LIMITING initiation point for all intestinal protein digestion.",
+  note:"Congenital enteropeptidase deficiency: rare but causes SEVERE protein malabsorption in infants — failure to thrive despite normal pancreatic enzyme secretion, because no trypsin can be activated." },
+
+{ cat:"absorption", lec:"l7",
+  q:"What happens to di/tripeptides absorbed by PEPT-1 inside the enterocyte?",
+  a:"Inside the enterocyte, INTRACELLULAR PEPTIDASES hydrolyze di- and tripeptides into FREE AMINO ACIDS. Only free amino acids exit via the basolateral membrane into blood capillaries. No significant peptides appear in portal blood.",
+  note:"This is important: PEPT-1 absorbs peptides, but they are CONVERTED to free AAs before entering blood. Blood always receives individual amino acids, not peptide chains (under normal conditions)." },
+
+{ cat:"metabolism", lec:"l7",
+  q:"What is the nitrogen content of protein, and how is it used to calculate protein intake from nitrogen measurements?",
+  a:"Proteins contain approximately 16% nitrogen by weight. Therefore: 1 g nitrogen = 6.25 g protein (1/0.16 = 6.25). This factor (6.25) converts measured urinary nitrogen to estimated dietary protein intake or loss.",
+  note:"Clinical application: if a patient excretes 10 g nitrogen in urine/day, they are losing ~62.5 g protein/day. Dietary protein must at least match this to maintain nitrogen equilibrium." },
+
+{ cat:"nitrobal", lec:"l7",
+  q:"What is nitrogen equilibrium (zero nitrogen balance) and who typically has it?",
+  a:"Nitrogen equilibrium = nitrogen INTAKE exactly equals nitrogen EXCRETION. It means protein synthesis = protein breakdown — no net gain or loss of body protein. Typically seen in: HEALTHY ADULTS with adequate protein intake and no special physiological demands.",
+  note:"This is the 'maintenance' state. As soon as demands change (illness, growth, pregnancy, starvation), the balance tips positive or negative. Healthy equilibrium requires consistently adequate dietary protein." },
+
+{ cat:"dietary", lec:"l7",
+  q:"What factors determine an individual's dietary protein requirement?",
+  a:"Three main factors: (1) AGE — infants and children need more per kg due to growth; elderly may need more due to reduced absorption. (2) PHYSIOLOGICAL STATE — pregnancy, lactation, growth, illness increase needs. (3) HEALTH STATUS — illness, surgery, burns, infections dramatically increase requirements.",
+  note:"A one-size-fits-all protein recommendation doesn't work clinically. Always individualize: a 70 kg healthy adult vs. a 70 kg burn patient have vastly different protein needs (0.8 vs. up to 3 g/kg/day)." },
+
+{ cat:"digestion", lec:"l7",
+  q:"What is the difference between a Dipeptide and a Tripeptide? Give the clinical significance.",
+  a:"DIPEPTIDE: 2 amino acids linked by 1 peptide bond. TRIPEPTIDE: 3 amino acids linked by 2 peptide bonds. Both are small enough to be absorbed via PEPT-1 in the intestine. CLINICAL: di/tripeptide formulas are used in enteral nutrition for patients with impaired digestion — they require less digestive work than intact proteins.",
+  note:"Enteral nutrition products come in 3 forms: Polymeric (whole proteins, normal digestion needed), Semi-elemental (peptides, partially digested), Elemental (free AAs, no digestion required). Knowing peptide absorption explains these choices." },
+
+// ── LECTURE 8 — CARBOHYDRATE BIOCHEMISTRY ────────────────────────
+{ cat:"carb-intro", lec:"l8",
+  q:"What are carbohydrates chemically composed of?",
+  a:"Carbohydrates are organic compounds composed of Carbon (C), Hydrogen (H), and Oxygen (O).",
+  note:"The name 'carbohydrate' literally means 'hydrates of carbon' because H and O appear in the same 2:1 ratio as water." },
+{ cat:"carb-intro", lec:"l8",
+  q:"Give the two chemical definitions of carbohydrates.",
+  a:"A) Polyhydroxy aldehydes or ketones.\nB) Substances that yield polyhydroxy aldehydes or ketones upon hydrolysis.",
+  note:"Both definitions are needed: definition A covers monosaccharides; definition B covers disaccharides and polysaccharides which lack a free carbonyl group." },
+{ cat:"carb-intro", lec:"l8",
+  q:"What does 'polyhydroxy' mean in the context of carbohydrates?",
+  a:"The molecule contains more than one hydroxyl group (–OH) attached to different carbon atoms. These –OH groups make carbohydrates water-soluble and chemically reactive.",
+  note:"Example: Glucose dissolves readily in blood precisely because of its multiple –OH groups forming hydrogen bonds with water." },
+{ cat:"carb-intro", lec:"l8",
+  q:"What is the difference between an aldehyde and a ketone carbonyl group in carbohydrates?",
+  a:"Aldehyde (–CHO): carbonyl group (C=O) is at the END of the carbon chain → Aldoses (e.g. Glucose).\nKetone (>C=O): carbonyl group is WITHIN the carbon chain → Ketoses (e.g. Fructose).",
+  note:"Glucose is an aldohexose; Fructose is a ketohexose. The position of the carbonyl group determines the sugar's reactivity." },
+{ cat:"carb-intro", lec:"l8",
+  q:"Why are disaccharides and polysaccharides still classified as carbohydrates even though they lack a free carbonyl group?",
+  a:"Because upon hydrolysis (breaking bonds by adding water) they yield polyhydroxy aldehydes or ketones (monosaccharides), satisfying the carbohydrate definition.",
+  note:"Sucrose → Glucose + Fructose on hydrolysis. Starch/Glycogen → many Glucose units. The glycosidic bond is broken by hydrolysis." },
+{ cat:"carb-intro", lec:"l8",
+  q:"What is the empirical formula of carbohydrates and what are its limitations?",
+  a:"Traditional formula: Cₙ(H₂O)ₙ — H and O in 2:1 ratio as in water.\nLimitations: 1) Carbohydrates don't actually contain water molecules. 2) Deoxyribose (C₅H₁₀O₄) doesn't fit. 3) Formaldehyde (CH₂O) fits but is NOT a carbohydrate.",
+  note:"Glucose → C₆H₁₂O₆ fits the formula. Deoxyribose (C₅H₁₀O₄) is a carbohydrate but doesn't fit — showing the formula's limitation." },
+{ cat:"carb-intro", lec:"l8",
+  q:"What is hydrolysis and why is it important in carbohydrate chemistry?",
+  a:"Hydrolysis = breaking a chemical bond by adding water. It converts complex carbohydrates (disaccharides, polysaccharides) into simpler monosaccharides by breaking glycosidic bonds.",
+  note:"This is how digestion works — salivary and pancreatic amylase hydrolyze starch; intestinal disaccharidases hydrolyze sucrose, lactose, and maltose." },
+{ cat:"carb-intro", lec:"l8",
+  q:"What is a glycosidic bond?",
+  a:"A covalent bond that links two monosaccharide units together in disaccharides and polysaccharides. It forms between the anomeric carbon (C1) of one sugar and a hydroxyl group of another, with loss of water.",
+  note:"Breaking glycosidic bonds requires specific enzymes (glycosidases) or acid hydrolysis. The bond type (α or β) determines which enzyme can break it." },
+
+// carb-roles
+{ cat:"carb-roles", lec:"l8",
+  q:"List the four main biological roles of carbohydrates.",
+  a:"1. Energy production (immediate fuel)\n2. Energy storage (glycogen)\n3. Structural integrity (glycoproteins, glycolipids, proteoglycans)\n4. Cell recognition and signalling",
+  note:"All four roles are clinically relevant: diabetes = energy dysregulation; glycogen storage diseases; mucopolysaccharidoses = structural; ABO blood groups = cell recognition." },
+{ cat:"carb-roles", lec:"l8",
+  q:"Why is glucose considered the primary energy source of the body?",
+  a:"Glucose is oxidized via glycolysis, then further metabolized through the TCA cycle and oxidative phosphorylation to produce rapid and efficient ATP. It is especially vital for the brain, red blood cells, and exercising muscle.",
+  note:"The brain uses ~120g glucose/day and cannot use fatty acids directly. RBCs have no mitochondria and rely entirely on glycolysis. This is why hypoglycemia causes neurological symptoms first." },
+{ cat:"carb-roles", lec:"l8",
+  q:"What are the two major sites of glycogen storage and their specific roles?",
+  a:"Liver glycogen: maintains blood glucose levels for the whole body (especially brain/RBCs).\nMuscle glycogen: provides local energy during muscle contraction — NOT released into blood.",
+  note:"Liver glycogen (~100g) is broken down by glucagon; muscle glycogen (~400g) is mobilized by epinephrine. Muscle lacks glucose-6-phosphatase, so it can't export glucose." },
+{ cat:"carb-roles", lec:"l8",
+  q:"What are the structural characteristics of glycogen?",
+  a:"Glycogen is a highly branched polysaccharide made of glucose units. The branching allows rapid simultaneous breakdown or synthesis at many sites when energy demand changes quickly.",
+  note:"Glycogen is stored with water and potassium in cells. Liver cells (hepatocytes) contain glycogen granules visible by PAS staining — used to diagnose glycogen storage diseases." },
+{ cat:"carb-roles", lec:"l8",
+  q:"What carbohydrate-containing molecules perform structural roles in the body?",
+  a:"Glycoproteins, Glycolipids, and Proteoglycans — found in cell membranes, extracellular matrix, and connective tissue.",
+  note:"Proteoglycans (e.g. hyaluronic acid, chondroitin sulfate) make up cartilage and synovial fluid. Glycoproteins include mucins that protect epithelial surfaces." },
+{ cat:"carb-roles", lec:"l8",
+  q:"How do carbohydrates on cell surfaces function in cell recognition and signalling?",
+  a:"Carbohydrates on cell surfaces (as part of glycoproteins and glycolipids) act as recognition markers and receptors for signalling molecules.",
+  note:"ABO blood groups are determined by carbohydrate antigens on red blood cells. Lectins recognize and bind specific carbohydrate patterns — important in pathogen-host interactions." },
+{ cat:"carb-roles", lec:"l8",
+  q:"What are glycoproteins and glycolipids?",
+  a:"Glycoproteins: proteins with covalently attached carbohydrate chains — found in cell membranes and secreted proteins (e.g. antibodies, hormones).\nGlycolipids: lipids with carbohydrate groups — key components of the outer cell membrane leaflet.",
+  note:"N-linked glycoproteins are attached via asparagine; O-linked via serine/threonine. Disruption of glycosylation causes congenital disorders of glycosylation (CDG)." },
+{ cat:"carb-roles", lec:"l8",
+  q:"What are proteoglycans and where are they found?",
+  a:"Proteoglycans are proteins with large glycosaminoglycan (GAG) chains attached. Found in the extracellular matrix and connective tissue — they provide hydration, cushioning, and structural support.",
+  note:"Examples: aggrecan (cartilage), versican, decorin. Heparan sulfate proteoglycans on cell surfaces act as co-receptors for growth factors." },
+
+// carb-classif
+{ cat:"carb-classif", lec:"l8",
+  q:"What are the four major classes of carbohydrates?",
+  a:"1. Monosaccharides (1 sugar unit)\n2. Disaccharides (2 sugar units)\n3. Oligosaccharides (3–10 sugar units)\n4. Polysaccharides (>10, up to thousands of sugar units)",
+  note:"Classification is based on number of sugar units and ability to undergo hydrolysis. Monosaccharides CANNOT be hydrolyzed further; all others can." },
+{ cat:"carb-classif", lec:"l8",
+  q:"Define monosaccharides and give three examples.",
+  a:"Monosaccharides consist of ONE sugar unit and cannot be hydrolyzed into simpler sugars (also called simple sugars).\nExamples: Glucose, Fructose, Galactose.",
+  note:"These are the building blocks of all other carbohydrates. All three (glucose, fructose, galactose) are hexoses with the same molecular formula C₆H₁₂O₆ but different structures (isomers)." },
+{ cat:"carb-classif", lec:"l8",
+  q:"Define disaccharides, how are they formed, and give three examples.",
+  a:"Disaccharides consist of TWO sugar units linked by a glycosidic bond. Can be hydrolyzed into monosaccharides.\nExamples: Sucrose (glucose + fructose), Lactose (glucose + galactose), Maltose (glucose + glucose).",
+  note:"Lactose intolerance = deficiency of lactase enzyme → lactose reaches colon, fermented by bacteria → bloating, diarrhea, gas." },
+{ cat:"carb-classif", lec:"l8",
+  q:"What are oligosaccharides and what is their main biological significance?",
+  a:"Oligosaccharides consist of 3–10 sugar units, can be hydrolyzed into monosaccharides. Commonly found in glycoproteins and glycolipids. Crucial in cell recognition and signalling.",
+  note:"Short oligosaccharide chains on glycoproteins serve as cell-type identifiers (e.g. blood group antigens). They are also recognized by lectins in immune responses." },
+{ cat:"carb-classif", lec:"l8",
+  q:"What are polysaccharides and give two examples?",
+  a:"Polysaccharides consist of MORE THAN 10 sugar units (can be hundreds to thousands). Also called complex carbohydrates. Can be hydrolyzed into monosaccharides.\nExamples: Starch (plant energy storage), Cellulose (plant structure).",
+  note:"Humans can digest starch (α-1,4 linkages) but NOT cellulose (β-1,4 linkages) — we lack β-glucosidase. Cellulose acts as dietary fiber, aiding gut motility." },
+{ cat:"carb-classif", lec:"l8",
+  q:"What is the structural difference between starch and glycogen?",
+  a:"Both are glucose polymers with α-1,4 linkages and α-1,6 branch points. Glycogen is MORE heavily branched (branch every ~8–12 glucose units) vs starch (every ~24–30). This allows glycogen to be rapidly mobilized.",
+  note:"More branch points = more free ends for simultaneous enzymatic action = faster glucose release. This is why glycogen is ideal for rapid energy responses." },
+{ cat:"carb-classif", lec:"l8",
+  q:"What is sucrose made of and what enzyme breaks it down?",
+  a:"Sucrose = Glucose + Fructose linked by an α-1,β-2 glycosidic bond (between their anomeric carbons). Broken down by sucrase (invertase) in the small intestinal brush border.",
+  note:"Because both anomeric carbons are linked, sucrose has NO free reducing end — it is a NON-REDUCING sugar. This is clinically important for reducing sugar tests like Benedict's test." },
+{ cat:"carb-classif", lec:"l8",
+  q:"What is lactose made of and what is the clinical importance of its digestion?",
+  a:"Lactose = Glucose + Galactose linked by a β-1,4 glycosidic bond. Broken down by lactase. Lactase deficiency → lactose intolerance → undigested lactose fermented in colon causing gas, bloating, diarrhea.",
+  note:"Primary lactase deficiency is common in adults worldwide, especially in Asian and African populations. Secondary lactase deficiency can follow intestinal injury (e.g. gastroenteritis, celiac disease)." },
+{ cat:"carb-classif", lec:"l8",
+  q:"What is maltose and where is it produced?",
+  a:"Maltose = Glucose + Glucose linked by an α-1,4 glycosidic bond. Produced during starch digestion by amylase. Broken down by maltase in the intestinal brush border.",
+  note:"Maltose is an intermediate of starch digestion — it accumulates when amylase acts on starch. It is a reducing sugar (has one free anomeric carbon)." },
+
+// monosac
+{ cat:"monosac", lec:"l8",
+  q:"What are the three criteria used to classify monosaccharides?",
+  a:"1. Position of the carbonyl group (aldose vs ketose)\n2. Number of carbon atoms (triose, tetrose, pentose, hexose, heptose)\n3. Both combined (e.g. aldohexose, ketopentose)",
+  note:"The combined classification is the most precise: glucose = aldohexose, fructose = ketohexose, ribose = aldopentose, glyceraldehyde = aldotriose." },
+{ cat:"monosac", lec:"l8",
+  q:"What are aldoses and ketoses? Give one example of each.",
+  a:"Aldoses: contain an ALDEHYDE group (–CHO) at C1. Example: Glucose (aldohexose), Galactose.\nKetoses: contain a KETONE group (>C=O) usually at C2. Example: Fructose (ketohexose), Dihydroxyacetone.",
+  note:"Fructose is sweet and a ketohexose; it can be converted to glucose-6-phosphate in the liver. Dihydroxyacetone is the simplest ketose (3 carbons)." },
+{ cat:"monosac", lec:"l8",
+  q:"Classify monosaccharides by carbon number with names and carbon count.",
+  a:"Triose → 3C | Tetrose → 4C | Pentose → 5C | Hexose → 6C | Heptose → 7C",
+  note:"The most biologically important are pentoses (ribose/deoxyribose in nucleic acids) and hexoses (glucose, fructose, galactose in energy metabolism)." },
+{ cat:"monosac", lec:"l8",
+  q:"What is an aldotriose and what is its biological significance?",
+  a:"An aldotriose has 3 carbons and an aldehyde group. Example: Glyceraldehyde (D-glyceraldehyde). It is an intermediate in glycolysis and the reference molecule for D/L configuration of sugars.",
+  note:"D-Glyceraldehyde is the standard for the D-series. If the –OH on the last chiral carbon (C2 in glyceraldehyde) points RIGHT in Fischer projection → D-sugar (like all biological sugars)." },
+{ cat:"monosac", lec:"l8",
+  q:"What is the combined classification of glucose?",
+  a:"Glucose = ALDOHEXOSE: Aldo = has an aldehyde group at C1. Hexose = has 6 carbon atoms. Molecular formula: C₆H₁₂O₆.",
+  note:"Glucose is the most abundant monosaccharide in nature and the primary fuel for cellular respiration. It circulates in blood at ~4–6 mmol/L normally." },
+{ cat:"monosac", lec:"l8",
+  q:"What is the combined classification of fructose?",
+  a:"Fructose = KETOHEXOSE: Keto = has a ketone group at C2. Hexose = has 6 carbon atoms. Molecular formula: C₆H₁₂O₆ (isomer of glucose).",
+  note:"Fructose is the sweetest natural sugar. High-fructose corn syrup is controversial because fructose is metabolized mainly in the liver, potentially contributing to fatty liver disease." },
+{ cat:"monosac", lec:"l8",
+  q:"Name the biologically most important pentoses and their roles.",
+  a:"Ribose (aldopentose): forms the backbone of RNA and ATP (ribose-5-phosphate).\nDeoxyribose (aldopentose, C₅H₁₀O₄): forms the backbone of DNA — lacks the –OH at C2.",
+  note:"Deoxyribose does NOT fit the Cₙ(H₂O)ₙ formula (C₅H₁₀O₄ ≠ C₅(H₂O)₅ = C₅H₁₀O₅) — this is one of the key examples showing the limitation of the empirical formula." },
+{ cat:"monosac", lec:"l8",
+  q:"What are the three most important hexoses biologically and their formulas?",
+  a:"Glucose (C₆H₁₂O₆) — primary energy source.\nFructose (C₆H₁₂O₆) — fruit sugar, ketohexose.\nGalactose (C₆H₁₂O₆) — component of lactose, brain gangliosides.",
+  note:"All three are structural isomers (same molecular formula, different arrangement). Galactose differs from glucose only at C4 — making it an epimer of glucose." },
+{ cat:"monosac", lec:"l8",
+  q:"What is the biological role of galactose?",
+  a:"Galactose is a component of lactose (milk sugar) and is found in brain glycolipids (gangliosides and cerebrosides). In the body it is converted to glucose by the Leloir pathway (requires galactose-1-phosphate uridyltransferase).",
+  note:"Galactosemia = inability to metabolize galactose due to enzyme deficiency → toxic accumulation → jaundice, cataracts, intellectual disability in newborns. Treated by eliminating galactose from diet." },
+{ cat:"monosac", lec:"l8",
+  q:"What is Dihydroxyacetone and why is it notable?",
+  a:"Dihydroxyacetone is the SIMPLEST KETOSE — a ketotriose with 3 carbons (C₃H₆O₃). It has NO chiral center and is the simplest carbohydrate with a ketone group. It appears in glycolysis as dihydroxyacetone phosphate (DHAP).",
+  note:"DHAP is an intermediate in glycolysis, gluconeogenesis, and glycerol metabolism. It is interconverted with glyceraldehyde-3-phosphate by triose phosphate isomerase." },
+{ cat:"monosac", lec:"l8",
+  q:"What are epimers in carbohydrate chemistry? Give an example.",
+  a:"Epimers are monosaccharides that differ in configuration at only ONE specific carbon atom (not the anomeric carbon).\nExample: Glucose and Galactose — identical except at C4 (C4-epimers).",
+  note:"Glucose and Mannose are C2-epimers. Epimerization reactions are catalyzed by epimerase enzymes (e.g. UDP-glucose-4-epimerase converts UDP-galactose ↔ UDP-glucose)." },
+{ cat:"monosac", lec:"l8",
+  q:"What is the difference between D-sugars and L-sugars?",
+  a:"D/L refers to the configuration of the –OH group on the LAST chiral carbon (highest-numbered) in the Fischer projection.\nD-sugar: –OH points to the RIGHT.\nL-sugar: –OH points to the LEFT.\nAll biologically important sugars are D-configuration.",
+  note:"D-Glucose is the biological form; L-Glucose exists but is not metabolized by human enzymes. This is analogous to L-amino acids being the biological standard." },
+{ cat:"monosac", lec:"l8",
+  q:"What are anomers and what is the anomeric carbon?",
+  a:"When a monosaccharide forms a ring (cyclic hemiacetal), a new chiral center is created at the carbonyl carbon → this is the ANOMERIC CARBON (C1 in aldoses, C2 in ketoses).\nα-anomer: –OH below the ring plane.\nβ-anomer: –OH above the ring plane.",
+  note:"In solution, glucose exists as ~36% α-D-glucose, ~64% β-D-glucose, and <1% open chain. This interconversion is called MUTAROTATION. β-D-glucose is more stable." },
+{ cat:"monosac", lec:"l8",
+  q:"What is mutarotation?",
+  a:"Mutarotation is the spontaneous interconversion between α and β anomers of a sugar through the open-chain (free aldehyde/ketone) form in aqueous solution. It results in an equilibrium mixture of both anomers.",
+  note:"Freshly dissolved α-D-glucose has [α]D = +112.2°; β-D-glucose = +18.7°. At equilibrium the mixture reaches +52.7°. The enzyme mutarotase (aldose-1-epimerase) catalyzes this in vivo." },
+{ cat:"monosac", lec:"l8",
+  q:"What are reducing sugars and how are they detected?",
+  a:"Reducing sugars have a FREE anomeric carbon (free aldehyde or ketone group) that can reduce oxidizing agents.\nDetection: Benedict's test — Cu²⁺ reduced to Cu⁺ (brick-red precipitate) in alkaline conditions.",
+  note:"All monosaccharides are reducing sugars. Among disaccharides: Maltose ✅ and Lactose ✅ are reducing; Sucrose ❌ is NON-reducing (both anomeric carbons are linked)." },
+{ cat:"monosac", lec:"l8",
+  q:"What are the clinical examples of carbohydrate abnormalities mentioned in the lecture context?",
+  a:"Diabetes mellitus: failure to regulate blood glucose → hyperglycemia.\nLactose intolerance: lactase deficiency → maldigestion of lactose.\nGalactosemia: inability to metabolize galactose → toxic accumulation.",
+  note:"Glycogen storage diseases (e.g. Von Gierke's — G6Pase deficiency, Pompe's — acid maltase deficiency) also illustrate what happens when carbohydrate metabolism is disrupted." },
+{ cat:"monosac", lec:"l8",
+  q:"What is the difference between a pyranose and a furanose ring?",
+  a:"Pyranose: 6-membered ring (5C + 1O) — resembles pyran. Example: α-D-glucopyranose.\nFuranose: 5-membered ring (4C + 1O) — resembles furan. Example: β-D-fructofuranose (fructose in sucrose).",
+  note:"Pyranose rings are more stable and predominate for 6-carbon aldoses (glucose, galactose). Fructose prefers furanose form when in sucrose. Ribose exists as a furanose in nucleotides." },
+
+]; // end ALL_CARDS
+
+// ── LECTURE COUNTS ───────────────────────────────────────────────
+const lecCounts = {all: ALL_CARDS.length};
+ALL_CARDS.forEach(c => { lecCounts[c.lec] = (lecCounts[c.lec]||0)+1; });
+['all','l34','l5','l6','l7','l8'].forEach(l => {
+  const el = document.getElementById('cnt-'+l);
+  if(el) el.textContent = '(' + (lecCounts[l]||0) + ')';
+});
+
+// ── STATE ────────────────────────────────────────────────────────
+let allFiltered = [...ALL_CARDS]; // filtered by lecture
+let active = [...ALL_CARDS];      // filtered by lecture + cat
+let idx = 0, isFlipped = false;
+let known = new Set(), skip = new Set();
+let currentLec = 'all';
+let currentCat = 'all';
+
+// ── LECTURE FILTER ───────────────────────────────────────────────
+function selectLec(lec, btn) {
+  currentLec = lec;
+  currentCat = 'all';
+  document.querySelectorAll('.lec-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  allFiltered = lec === 'all' ? [...ALL_CARDS] : ALL_CARDS.filter(c => c.lec === lec);
+  active = [...allFiltered];
+  buildCatButtons();
+  idx = 0; isFlipped = false;
+  document.getElementById('flipBox').classList.remove('flipped');
+  known.clear(); skip.clear();
+  render();
+}
+
+// ── BUILD CATEGORY BUTTONS ────────────────────────────────────────
+function buildCatButtons() {
+  const catsInView = ['all', ...new Set(allFiltered.map(c => c.cat))];
+  const container = document.getElementById('catBtns');
+  container.innerHTML = '';
+  catsInView.forEach(cat => {
+    const count = cat === 'all' ? allFiltered.length : allFiltered.filter(c => c.cat === cat).length;
+    const btn = document.createElement('button');
+    btn.className = 'cat-btn' + (cat === currentCat ? ' active' : '');
+    btn.setAttribute('data-cat', cat);
+    btn.textContent = (CAT_LABELS[cat] || cat) + ' (' + count + ')';
+    btn.onclick = () => filterCat(cat, btn);
+    container.appendChild(btn);
+  });
+}
+
+// ── CATEGORY FILTER ───────────────────────────────────────────────
+function filterCat(cat, btn) {
+  currentCat = cat;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  active = cat === 'all' ? [...allFiltered] : allFiltered.filter(c => c.cat === cat);
+  idx = 0; isFlipped = false;
+  document.getElementById('flipBox').classList.remove('flipped');
+  render();
+}
+
+// ── RENDER ────────────────────────────────────────────────────────
+function getCard(){ return active[idx]; }
+
+function render(){
+  const c = getCard(); if(!c) return;
+  document.getElementById('cardQ').textContent    = c.q;
+  document.getElementById('cardA').textContent    = c.a;
+  document.getElementById('cardNote').textContent = c.note || '';
+  const label = CAT_LABELS[c.cat] || c.cat;
+  ['cardTag','cardTagB'].forEach(id => {
+    const el = document.getElementById(id);
+    el.textContent = label;
+    el.className = 'face-tag tag-' + c.cat;
+  });
+  const box = document.getElementById('flipBox');
+  box.className = 'flip-container cat-' + c.cat + (isFlipped ? ' flipped' : '');
+  const n = idx+1, total = active.length;
+  document.getElementById('cardNum').textContent     = 'Card ' + n + ' of ' + total;
+  document.getElementById('statCurrent').textContent = n;
+  document.getElementById('statTotal').textContent   = total;
+  document.getElementById('statKnow').textContent    = known.size;
+  document.getElementById('statSkip').textContent    = skip.size;
+  const pct = Math.round((n/total)*100);
+  document.getElementById('progFill').style.width  = pct+'%';
+  document.getElementById('progLeft').textContent  = 'Card ' + n + ' of ' + total;
+  document.getElementById('progPct').textContent   = pct+'%';
+  renderMini();
+}
+
+function flipCard(){ isFlipped = !isFlipped; document.getElementById('flipBox').classList.toggle('flipped', isFlipped); }
+function nextCard(){ isFlipped=false; document.getElementById('flipBox').classList.remove('flipped'); if(idx<active.length-1) idx++; render(); }
+function prevCard(){ isFlipped=false; document.getElementById('flipBox').classList.remove('flipped'); if(idx>0) idx--; render(); }
+function markKnow(){ known.add(idx+'_'+currentCat); nextCard(); }
+function markSkip(){ skip.add(idx+'_'+currentCat); nextCard(); }
+
+function shuffleCards(){
+  for(let i=active.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [active[i],active[j]]=[active[j],active[i]]; }
+  idx=0; isFlipped=false; render();
+}
+function resetAll(){ known.clear(); skip.clear(); idx=0; isFlipped=false; document.getElementById('flipBox').classList.remove('flipped'); render(); }
+
+function jumpTo(i){ idx=i; isFlipped=false; document.getElementById('flipBox').classList.remove('flipped'); render(); }
+
+function renderMini(){
+  const grid = document.getElementById('miniGrid');
+  grid.innerHTML = '';
+  active.forEach((c,i) => {
+    const div = document.createElement('div');
+    const done = known.has(i+'_'+currentCat);
+    div.className = 'mini-card' + (done?' done':'') + (i===idx?' active':'');
+    div.innerHTML = '<span class="mini-num">'+(i+1)+'</span><span>'+c.q.substring(0,28)+'…</span>';
+    div.onclick = () => jumpTo(i);
+    grid.appendChild(div);
+  });
+}
+
+document.addEventListener('keydown', e => {
+  if(e.key==='ArrowRight'||e.key===' '){ e.preventDefault(); isFlipped ? nextCard() : flipCard(); }
+  else if(e.key==='ArrowLeft') prevCard();
+  else if(e.key==='k') markKnow();
+  else if(e.key==='r') markSkip();
+});
+
+// Init
+buildCatButtons();
+render();
+</script>
+</body>
+</html>
